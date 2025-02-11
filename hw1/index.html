@@ -52,11 +52,22 @@
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
 		
-		<p><i>Walk through how you rasterize triangles in your own words:</i> You can rasterize triangles through the three line point test ...</p>
-		<p><i>Explain how your algorithm is no worse than one that checks each sample within the bounding box of the triangle:</i> It's no worse than one that checks each sample becuase ...</p>
-		<p><i>Show a png screenshot of basic/test4.svg with the default viewing parameters and with the pixel inspector centered on an interesting part of the scene.</i>Here is screenshot</p>
+		<p><i>Walk through how you rasterize triangles in your own words:</i> 
+			<p>You can rasterize triangles through the three line point test. First, we check the cross product of two consecutive edges. If the cross product is negative, that indicates a clockwise winding order and we swap two consecutive edges to turn the winding order into counter-clockwise. If the cross product is positive, then the winding order is already counter clockwise and we don't need to change the ordering.</p> 
+			<p>Next, we calculate the equation \(–(x - X_i)\delta Y_i + (y - Y_i)\delta X_i \) for each edge of the triangle where \(\delta Y_i\) is the difference between the y-coordinates of two consecutive vertices and \(\delta X_i\) is the difference between the x-coordinates of two consecutive vertices. For each pixel, we plug it into each of these three equations, and if it's \(>=0\) for all three lines, we consider it to be inside the area of the triangle and fill the pixel with the given color</p>
+		</p>
+		<p><i>Explain how your algorithm is no worse than one that checks each sample within the bounding box of the triangle:</i> 
+			It's no worse than one that checks each sample becuase we only iterate over each pixel within the bounding box of the triangle instead of the entire pixel space of the image.
+		</p>
+
+		<figure>
+			<img src="svg4.png" alt="svg4" style="width:50%"/>
+			<figcaption>Screenshot of svg4 with interesting pixel inspector</figcaption>
+		</figure>
+			
 		<p><i>Special Optimizations:</i> These optimizations ...</p>
 
+		<!--
 		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
@@ -81,7 +92,7 @@
 				</td>
 			  </tr>
 			</table>
-		</div>
+		</div>-->
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
