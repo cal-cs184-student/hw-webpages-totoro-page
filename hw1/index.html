@@ -157,29 +157,37 @@
 			<table style="width: 100%; text-align: center; border-collapse: collapse;  border-spacing: 20px 10px">
 			  <tr>
 				<td style="text-align: center; padding: 15px">
-				  <img src="nearest_1.png" width="400px"/>
+				  <img src="nearest_1_logo.png" width="400px"/>
 				  <figcaption>Nearest sampling, sample rate 1</figcaption>
 				</td>
 				<td style="text-align: center;padding: 15px">
-				  <img src="nearest_16.png" width="400px"/>
+				  <img src="nearest_16_logo.png" width="400px"/>
 				  <figcaption>Nearest sampling, sample rate 16.</figcaption>
 				</td>
 			  </tr>
 			  <tr>
 				<td style="text-align: center;padding: 15px">
-				  <img src="bilinear_1.png" width="400px"/>
+				  <img src="bilinear_1_logo.png" width="400px"/>
 				  <figcaption>Bilinear sampling, sample rate 1.</figcaption>
 				</td>
 				<td style="text-align: center;padding: 15px">
-				  <img src="bilinear_16.png" width="400px"/>
+				  <img src="bilinear_16_logo.png" width="400px"/>
 				  <figcaption>Bilinear sampling, sample rate 16.</figcaption>
 				</td>
 			  </tr>
 			</table>
+		</div>
+
+		<p>Even at a sample rate of 1, switching from nearest to bilinear sampling reduces the Moire effects on the swirled logo by softening edges. While bilinear filtering doesn't fully replace supersampling, it still provides a noticeable improvement in rasterization quality at low sample rates. In this image of the swirled logo, the bilinear sampling at sample rate 1 produces a visually similar effect to nearest sampling at a sample rate of 16, displaying how texture filtering can act as a form of antialiasing.</p>
 
 
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
 		<p><i>Explain level sampling and how we implemented it for texture mapping</i></p>
+		<p>Level sampling revolves around the idea of selecting the appropriate mipmap level when performing texture mapping, where mipmap levels refer to a sequence of precomputed downsampled versions of a texture. Each consecutive mipmap level is half the resolution of the previous level. Level sampling takes advantage of differentials to calculate the rate of change of texture coordinates (u,v) across screen space, since the texture coordinates may change at different rates depending on perspective and distance from the viewer.</p>
+			
+		<p>Higher differentials indicate that the texture is changing a lot and being "stretched" over a specific area, and therefore needs a higher resolution texture in order to reduce antialiasing effects and preserve detail. On the other hand, smaller differentials indicate that the texture is not being changed a lot and therefore does not need a higher resolution texture since the texture is being so compressed when it's viewed from a farther distance. By determining the proper level, we can determine what mipmap level to use at different locations. </p>
+
+		<p>To implement level sampling, we first computed the texture differentials (du/dx, dv/dx, du/dy, dv/dy) from neighboring texture samples. ADD MORE DETAIL HERE</p>
 
 		<p><i>Tradeoffs in speed, memory usage, antialiasing between pixel sampling, level sampling, or number of samples per pixel</i></p>
 
