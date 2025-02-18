@@ -32,7 +32,7 @@
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to webpage <a href="https://cal-cs184-student.github.io/hw-webpages-totoro-page/hw1/index.html">cal-cs184-student.github.io/hw-webpages-totoro-page/hw1</a>
 		
 		<br>
 
@@ -50,15 +50,16 @@
 		<h2>Overview</h2>
 		<p><i>Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.</i></p>
 
-		<p>In this homework, we implemented basic rasterization pipelines as well as antialiasing techniques. We also implemented texture mapping with pixel sampling and level sampling, and explored transforms as well as barycentric coordinates. 
-			We also saw how mipmaps work and how the right level of mipmap can be chosen for different parts of rassterized image.
+		<p>In this homework, we implemented basic rasterization pipelines as well as antialiasing techniques like supersampling. We also implemented texture mapping with pixel sampling and level sampling, and explored transforms as well as barycentric coordinates. We dove into how mipmaps work and how the right level of mipmap can be chosen for different parts of rasterized image in order to reduce artifacts. </p>
+		
+		<p>We learned a lot about how supersampling can be used to reduce aliasing, and having to implement a sample buffer and resolve it to the frame buffer gave us insight into the memory considerations of a rasterization pipeline. We were also initially confused about the important of Barycentric coordinates, but seeing the interpolation of a smooth color surface across a triangle gave us a stronger understanding of how the Barycentric coefficients are important. It was also interesting to see firsthand how mipmaps can be used to reduce aliasing as well as improve performance, and it gave us better intuition about how the differentials are important for capturing how much the texture space is stretched or compressed. We also learned about how different sampling methods can affect the quality of the image and how different levels of mipmaps can be used to reduce aliasing. We also learned how to use transforms to manipulate objects in 3D space and build some cool figures. </p>
 		</p>
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
 		
 		<p><i>Walk through how you rasterize triangles in your own words:</i> 
-			<p>Basic rasterization for a triangle at a sample rate of 1 involves figuring out what color to fill each pixel in the image. You can rasterize triangles through the three line point test, which checks to see whether a pixel falls within the bounds of the given triangle. First, we check the winding order of the given triangle by examining the cross product of two consecutive edges. If the cross product is negative, that indicates a clockwise winding order and we swap two consecutive edges to turn the winding order into counter-clockwise. If the cross product is positive, then the winding order is already counter clockwise and we don't need to change the ordering.</p> 
-			<p>Next, we calculate the equation \(–(x - X_i)\delta Y_i + (y - Y_i)\delta X_i \) for each edge of the triangle where \(\delta Y_i\) is the difference between the y-coordinates of two consecutive vertices and \(\delta X_i\) is the difference between the x-coordinates of two consecutive vertices. For each pixel, we plug it into each of these three equations, and if it's \(>=0\) for all three lines, we consider it to be inside the area of the triangle and fill the pixel with the given color. If it's not inside the area of the triangle, we don't fill it. </p>
+			<p>Basic rasterization for a triangle at a sample rate of 1 involves figuring out what color to fill each pixel in the image and whether or not it falls inside or outside the triangle. You can rasterize triangles through the three line point test, which checks to see whether a pixel falls within the bounds of the given triangle. First, we check the winding order of the given triangle by examining the cross product of two consecutive edges. If the cross product is negative, that indicates a clockwise winding order and we swap two consecutive edges to turn the winding order into counter-clockwise. If the cross product is positive, then the winding order is already counter clockwise and we don't need to change the ordering.</p> 
+			<p>Next, we calculate the equation \[–(x - X_i)(Y_{i+1} - Y_i) + (y - Y_i)(X_{i+1} - X_i)\]for each edge of the triangle where \(X_i, Y_i\) and \(X_{i+1}, Y_{i+1}\) are the coordinates of two consecutive vertices of the triangle and \(x, y\) is the coordinate of the pixel we're checking. We do this for all three edges of the triangle. For each pixel, we plug it into each of these three equations, and if it's \(>=0\) for all three lines, we consider it to be inside the area of the triangle and fill the pixel with the given color. If it's not inside the area of the triangle, we don't fill it. </p>
 		</p>
 		<p><i>Explain how your algorithm is no worse than one that checks each sample within the bounding box of the triangle:</i> 
 			It's no worse than one that checks each sample becuase we only iterate over each pixel within the bounding box of the triangle instead of the entire pixel space of the image.
@@ -68,8 +69,6 @@
 			<img src="svg4_1.png" alt="svg4" style="width:50%"/>
 			<figcaption>Screenshot of svg4 with interesting pixel inspector</figcaption>
 		</figure>
-			
-		<p><i>Special Optimizations:</i> These optimizations ...</p>
 
 		<!--
 		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
@@ -100,13 +99,13 @@
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
 		<p><b><i>Supersampling Algorithm and Data Structures Walkthrough:</i></b></p>
-			<p>To implement supersampling, we first initialized the sample buffer to be of size \(width * height * sample\_rate\) in order to store the subpixel information we gained from sampling at a higher frequency. After initializing the sample buffer, we modified <code>rasterize_triangle()</code> to add support for super sampling by adding an inner nested for loop that loops over each pixel \(NxN\) times, where N is \(\sqrt(sample\_rate)\). To calculate the center of the subpixel, we used the formula \[pixel\_x + (sample\_index\_x + 0.5) * (1/(\sqrt(sample\_rate)))\] where \(pixel\_x\) is the x-coordinate of the pixel, \(sample\_index\_x\) is the x-coordinate of the subpixel, and \(\sqrt(sample\_rate)\) is the square root of the sample rate. We did the same for the y-coordinate.
+			<p>To implement supersampling, we first initialized the sample buffer to be of size \(width * height * sample\_rate\) in order to store the subpixel information we gained from sampling at a higher frequency. After initializing the sample buffer, we modified <code>rasterize_triangle()</code> to add support for super sampling by adding an inner nested for loop that loops over each pixel \(NxN\) times, where N is <code>sqrt(sample_rate)</code>. To calculate the center of the subpixel, we used the formula \[pixel\_x + (sample\_index\_x + 0.5) * (1/(\sqrt(sample\_rate)))\] where \(pixel\_x\) is the x-coordinate of the pixel, \(sample\_index\_x\) is the x-coordinate of the subpixel, and <code>sqrt(sample_rate)</code> is the square root of the sample rate. We did the same for the y-coordinate.
 
 			After calculating the center of the subpixel, we then checked if the subpixel was inside the triangle by with the three line point test as implemented in task 1. If the subpixel was inside the triangle, we set the sample buffer at index \[(pixel\_y*width + pixel\_x) * sample\_rate + (sample\_index\_y* \sqrt(sample\_rate) + sample\_index\_x)\] to the color of the triangle. Once we've properly filled the sample buffer, we then resolve the sample buffer to the frame buffer by averaging out each subpixel within each respective pixel to determine the averaged RGB value for the pixel, and save that averaged color to the framebuffer. 
 			</p>
 
 		<p><i>Why is supersampling useful? What modifications did you make to the rasterization pipeline in the process? Explain how you used supersampling to antialias your triangles.</i></p>
-			<p>Supersampling is the method involving first sampling at a higher frequency where each pixel has \(NxN\) samples then downsampling by averaging the subpixel values, and it's useful because it's an antialiasing technique which can reduce jaggies and other artifacts to significantly improve the image quality. We had to make modifications to the rasterization pipeline by introducing a sample buffer of size width by height by sample rate and introducing another inner nested for loop to <code>rasterize_triangle()</code> which loops over each pixel \(NxN\) times. We also had to modify how the sample buffer resolved to the frame buffer by making sure we had to average out the subpixels within each pixel. Supersampling antialiased our triangles by smoothing out the jagged edges with averaged pixel color values, rather than harsh jaggies. </p>
+			<p>Supersampling is the method of first sampling at a higher frequency where each pixel has \(NxN\) samples then downsampling by averaging the subpixel values. It's useful because it's an antialiasing technique which can reduce jaggies and other artifacts to significantly improve the image quality. We had to make modifications to the rasterization pipeline by introducing a sample buffer of size width by height by sample rate and introducing another inner nested for loop to <code>rasterize_triangle()</code> which loops over each pixel \(NxN\) times. We also had to modify how the sample buffer resolved to the frame buffer by making sure we averaged out the subpixels within each pixel. Supersampling antialiased our triangles by smoothing out the jagged edges with averaged pixel color values, rather than harsh jaggies. </p>
 
 		<p><i>Screenshots with varying sample rates:</i></p>
 
@@ -135,13 +134,13 @@
 			</table>
 		</div>
 
-		<p>As the sampling rate increases, the jaggies become smoother and smoother and the overall quality of the image sharpens. This is because as we increase the supersampling rate, we're taking more samples per pixel and storing these into our sample buffer, giving us much more fine-grained detail that we can average out for the final pixel value. This is especially helpful for jaggies at sharp triangle vertices, where the triangle might be broken at low sampling rates, but we can see it becomes much more blurred and smooth and connected as the sampling rate incrased to 9 and 16 in the above screenshots.</p>
+		<p>These results are observed because as the sampling rate increases, the jaggies become smoother and smoother and the overall quality of the image sharpens. This is because as we increase the supersampling rate, we're taking more samples per pixel and storing these into our sample buffer, giving us much more fine-grained detail that we can average out for the final pixel value. This is especially helpful for jaggies at sharp triangle vertices, where the triangle might be broken at low sampling rates, but we can see it becomes much more blurred and smooth and connected as the sampling rate incrased to 9 and 16 in the above screenshots.</p>
 
 		<h2>Task 3: Transforms</h2>
 		<p><i>Screenshot of cubeman and what we were trying to do with him</i></p>
 		<figure>
 			<img src="robot.png" alt="transform-robot" style="width:50%"/>
-			<figcaption>We turned our robot into a superman pose by lifting his arm and arranging his other arm and legs at an angle to make him look as if he's flying, which involved rotating and translating his limbs and also scaling his head size down to make his body look more buff.</figcaption>
+			<figcaption>We turned our robot into a superman pose by lifting his arm and angling his other arm and legs at an diagonal to make him look as if he's flying through the air, which involved rotating and translating his limbs and also scaling his head size down to make his body look more buff.</figcaption>
 		</figure>
 
 		<h2>Task 4: Barycentric coordinates</h2>
@@ -160,7 +159,9 @@
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
 		<p><i>Explain pixel sampling and how we implemented it to perform texture mapping. Discuss 2 different pixel sampling methods (nearest and bilinear)</i></p>
-		<p>Pixel sampling is the method of mapping a texture onto a triangle by sampling the color of the texel (u,v) that is nearest to the barycentric coordinates of the pixel. This method is straightforward, but can create alisasing artifacts. We examined two different pixel sampling methods: nearest and bilinear. Nearest sampling (also known as nearest neighbor sampling) takes the color of the texel that is closest to the barycentric coordinates of the pixel. On the other hand, bilinear sampling takes a weighted average of the four nearest texels surrounding the barycentric coordinates through 3 LERPs (linear interpolations). Bilinear sampling tends to have a blurred effect as compared to nearest sampling. After determining the texel value, we use the texel value to fill in the pixel value. </p>
+		<p>Pixel sampling is the method of mapping a texture onto a triangle by sampling the color of the texel (u,v) that is nearest to the barycentric coordinates of the pixel. This method is straightforward, but can create alisasing artifacts. We implemented pixel sampling by calculating the barycentric coordinates of the pixel and using these coordinates to interpolate the texture for (u,v). TODO FILL THIS IN HERE</p>
+			
+		<p>We examined two different pixel sampling methods: nearest and bilinear. Nearest sampling (also known as nearest neighbor sampling) takes the color of the texel that is closest to the barycentric coordinates of the pixel. On the other hand, bilinear sampling takes a weighted average of the four nearest texels surrounding the barycentric coordinates through 3 LERPs (linear interpolations). Bilinear sampling tends to have a blurred effect as compared to nearest sampling. After determining the texel value, we use the texel value to fill in the pixel value. </p>
 
 		<p><i>Screenshots to show and compare nearest vs bilinear sampling at different rates and comment on differences</i></p>
 		
@@ -189,7 +190,7 @@
 			</table>
 		</div>
 
-		<p>Even at a sample rate of 1, switching from nearest to bilinear sampling reduces the Moire effects on the swirled logo by softening edges. While bilinear filtering doesn't fully replace supersampling, it still provides a noticeable improvement in rasterization quality at low sample rates. In this image of the swirled logo, the bilinear sampling at sample rate 1 produces a visually similar effect to nearest sampling at a sample rate of 16, displaying how texture filtering can act as a form of antialiasing.</p>
+		<p>Even at a sample rate of 1, switching from nearest to bilinear sampling reduces the Moire effects on the swirled logo by softening edges. While bilinear filtering doesn't fully replace supersampling, it still provides a noticeable improvement in rasterization quality at low sample rates. In this image of the swirled logo, the bilinear sampling at sample rate 1 produces a visually similar effect to nearest sampling at a sample rate of 16, displaying how texture filtering can act as a form of antialiasing. There will be a large difference between the 2 methods when there are jaggies from curved edges or there's a lot of fine-grained detail which could create aliasing artifacts.</p>
 
 
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
@@ -200,8 +201,8 @@
 
 		<p>To implement level sampling, we first computed the texture differentials (du/dx, dv/dx, du/dy, dv/dy) from neighboring texture samples. Each differential tells us the rate of change of texture coordinates per pixels in the screen space, which helps us determine which mipmap level to use.</p>
 
-		<p>As given in the spec, we compute the texture coordinates for \((x + 1, y)\) and \((x, y + 1)\). This gives us \((du/dx, dv/dx)\) and \((du/dy, dv/dy)\). We then use this to calculate the approporiate level using the formula below from lecture:</p>
-		<p>\[L = \log_2 \left( \max \left( \sqrt{(du/dx)^2 + (dv/dx)^2}, \sqrt{(du/dy)^2 + (dv/dy)^2} \right) \right)\]</p>
+		<p>As given in the spec, we compute the texture coordinates for \((x + 1, y)\) and \((x, y + 1)\). This gives us \((du/dx, dv/dx)\) and \((du/dy, dv/dy)\). We then take the difference vectors <code>sp.p_dx_uv - sp.p_uv</code> and <code>sp.p_dy_uv - sp.p_uv</code> and scale these difference vectors by the width and height of the texture image. With these 2 difference vectors, we calculate the approporiate level using the formula below from lecture:</p>
+		<p>\[L = \log_2 \left( \max \left( \sqrt{(du/dx)^2 + (dv/dx)^2}, \sqrt{(du/dy)^2 + (dv/dy)^2} \right) \right)\] Once we have the level, we can use the level in our <code>sample</code> function to check the level sampling method. If the level sample method is zero, we just always set the level as 0. If the level sample method is nearest, we round the level to the nearest integer. If the level sample method is linear, we take the low and high level by taking the floor and ceiling respectively, then sampling from both the high and the low level and taking a weighted sum of the 2 interpolated colors. </p>
 
 		<p><i>Tradeoffs in speed, memory usage, antialiasing between pixel sampling, level sampling, or number of samples per pixel</i></p>
 		<ul>
@@ -210,57 +211,41 @@
 			</li>
 			<li>Level Sampling: <br>
 				<ul>- L_ZERO uses the highest resolution texture, but this can create aliasing(moire or flickering) especially if the texture map is stretched a lot.</ul>
-				<ul>- L_NEAREST reduces aliasing by selecting a mipmap level that reflects the rate of change in texture coordinates. However, since it only loads from a single mipmap level it may leave aliasing effects in scenarios where an approriate texture is a mix of two mipmaps levels. (e.g. ideal mipmap level is between 2 and 3, but we only load a mipmap level of 2.</ul>
+				<ul>- L_NEAREST reduces aliasing by selecting a mipmap level that reflects the rate of change in texture coordinates. However, since it only loads from a single mipmap level it may leave aliasing effects in scenarios where an approriate texture is a mix of two mipmaps levels. (e.g. ideal mipmap level is between 2 and 3, but we only load a mipmap level of 2.)</ul>
 				<ul>- L_LINEAR addresses such scenarios that L_NEAREST might perform poorly on by mixing the weighted sum of textures in two mipmap levels. This creates smoother mipmap results since it blends two mipmap levels, but it comes at an expensive performance cost since we now have to load two mipmap levels and perform additional computations for the weighted average between the two.</ul>
 			</li>
 			<li>Number of Samples per Pixel: <br>
 				<ul>- Increasing the number of samples per pixel helps prevent aliasing, but is quite costly in terms of both latency and memory. Latency-wise, there's increased computation as we have to loop through additional \(NxN\) samples per each pixel. There is also the additional iterations for downsampling the sample buffer back to the frame buffer. Memory-wise, the size of our sample buffer is increased to \((size\_of\_framebuffer) * (NxN)\) to account for indexing all supersampled sub-pixels. This creates a burden not only for naive storage, but also when it comes to loading from or storing on the cache.</ul>
 			</li>
 		</ul>
-		<p>Below are 4 versions of a mix of different combinations of pixel sampling, level sampling, and number of samples per pixel. The first one(top left) is the cheapest where we use nearest sampling, L_ZERO sampling, and no super-sampling. Though it is cheap, we see jaggies when zoomed in.</p>
+		<p>Below are 4 versions of a mix of different combinations of pixel sampling and level sampling. The first one(top left) is the cheapest where we use nearest sampling, L_ZERO sampling, and no super-sampling. Though it is cheap, we see jaggies when zoomed in.</p>
 		<p>The next two combinations(top right, bottom left) are a good balance of performance and antialiasing. Between the two, we can see that when the level sampling method is set to linear we see the tree leaves transition more smoothly, although in this case it amy seem a bit too blurry since the leaves are too close together.</p>
-		<p>The most expensive combination(bottom right) is bilinear pixel sampling, linear level sampling, and a supersampling rate of 16 samples per pixel. Although the performance overhead is extremely large compared to our previous methods, the resulting visual effects do not seem that profoundly different from our middle two combinations.</p>
+		<p>The most expensive combination out of the 4 (bottom right) is bilinear pixel sampling and nearest level sampling. Although the performance overhead is extremely large compared to our previous methods, the resulting visual effects do not seem that profoundly different from our middle two combinations.</p>
 
 		<!-- <p><i>Show 4 versi/ons of a png image with different combinations </i></p> -->
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;  border-spacing: 20px 10px">
 			  <tr>
 				<td style="text-align: center; padding: 15px">
-				  <img src="task6_0.png" width="400px"/>
+				  <img src="zero_nearest.png" width="400px"/>
 				  <figcaption>(Most Cheap) Nearest sampling; Level zero; Sample rate 1</figcaption>
 				</td>
 				<td style="text-align: center;padding: 15px">
-				  <img src="task6_1.png" width="400px"/>
-				  <figcaption>Bilinear sampling; Level nearest; Sample rate 4</figcaption>
+				  <img src="zero_bilinear.png" width="400px"/>
+				  <figcaption>Bilinear sampling; Level zero; Sample rate 1</figcaption>
 				</td>
 			  </tr>
 			  <tr>
 				<td style="text-align: center;padding: 15px">
-				  <img src="task6_2.png" width="400px"/>
-				  <figcaption>Bilinear sampling; Level linear; Sample rate 9</figcaption>
+				  <img src="nearest_nearest2.png" width="400px"/>
+				  <figcaption>Nearest sampling; Level nearest; Sample rate 1</figcaption>
 				</td>
 				<td style="text-align: center;padding: 15px">
-				  <img src="task6_3.png" width="400px"/>
-				  <figcaption>(Most Expensive) Bilinear sampling; Level linear; Sample rate 16</figcaption>
+				  <img src="nearest_bilinear.png" width="400px"/>
+				  <figcaption>(Most Expensive) Bilinear sampling; Level nearest; Sample rate 1</figcaption>
 				</td>
 			  </tr>
 			</table>
-		</div>
-
-
-		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
 		</div>
 	</body>
 </html>
