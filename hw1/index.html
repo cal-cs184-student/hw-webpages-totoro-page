@@ -28,7 +28,7 @@
 	<body>
 		<div class="container">
 		<h1>CS184/284A Spring 2025 Homework 1 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+		<div style="text-align: center;">Names: Annabel Ng (3038330323) and Henry Ko (Henry ID) </div>
 
 		<br>
 
@@ -48,20 +48,23 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		<p><i>Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.</i></p>
+
+		<p>In this homework, we implemented basic rasterization pipelines as well as antialiasing techniques. We also implemented texture mapping with pixel sampling and level sampling, and explored transforms as well as barycentric coordinates. 
+		</p>
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
 		
 		<p><i>Walk through how you rasterize triangles in your own words:</i> 
-			<p>You can rasterize triangles through the three line point test. First, we check the cross product of two consecutive edges. If the cross product is negative, that indicates a clockwise winding order and we swap two consecutive edges to turn the winding order into counter-clockwise. If the cross product is positive, then the winding order is already counter clockwise and we don't need to change the ordering.</p> 
-			<p>Next, we calculate the equation \(–(x - X_i)\delta Y_i + (y - Y_i)\delta X_i \) for each edge of the triangle where \(\delta Y_i\) is the difference between the y-coordinates of two consecutive vertices and \(\delta X_i\) is the difference between the x-coordinates of two consecutive vertices. For each pixel, we plug it into each of these three equations, and if it's \(>=0\) for all three lines, we consider it to be inside the area of the triangle and fill the pixel with the given color</p>
+			<p>Basic rasterization for a triangle at a sample rate of 1 involves figuring out what color to fill each pixel in the image. You can rasterize triangles through the three line point test, which checks to see whether a pixel falls within the bounds of the given triangle. First, we check the winding order of the given triangle by examining the cross product of two consecutive edges. If the cross product is negative, that indicates a clockwise winding order and we swap two consecutive edges to turn the winding order into counter-clockwise. If the cross product is positive, then the winding order is already counter clockwise and we don't need to change the ordering.</p> 
+			<p>Next, we calculate the equation \(–(x - X_i)\delta Y_i + (y - Y_i)\delta X_i \) for each edge of the triangle where \(\delta Y_i\) is the difference between the y-coordinates of two consecutive vertices and \(\delta X_i\) is the difference between the x-coordinates of two consecutive vertices. For each pixel, we plug it into each of these three equations, and if it's \(>=0\) for all three lines, we consider it to be inside the area of the triangle and fill the pixel with the given color. If it's not inside the area of the triangle, we don't fill it. </p>
 		</p>
 		<p><i>Explain how your algorithm is no worse than one that checks each sample within the bounding box of the triangle:</i> 
 			It's no worse than one that checks each sample becuase we only iterate over each pixel within the bounding box of the triangle instead of the entire pixel space of the image.
 		</p>
 
 		<figure>
-			<img src="svg4.png" alt="svg4" style="width:50%"/>
+			<img src="svg4_1.png" alt="svg4" style="width:50%"/>
 			<figcaption>Screenshot of svg4 with interesting pixel inspector</figcaption>
 		</figure>
 			
@@ -98,28 +101,29 @@
 		<p><i>Supersampling Algorithm and Data Structures Walkthrough:</i></p>
 
 		<p><i>Why is supersampling useful? What modifications did you make to the rasterization pipeline in the process? Explain how you used supersampling to antialias your triangles.</i></p>
+			<p>Supersampling is the method involving first sampling at a higher frequency where each pixel has \(NxN\) samples then downsampling by averaging the subpixel values. We had to make modifications to the rasterization pipeline by introducing a sample buffer of size width by height by sample rate in order to store the color values of each subpixel at index \(y*width + x) * sample_rate + (i*sqrt(sample_rate) + j), where (x,y) is the coordinate of the pixel and (i,j) is the inner coordinate of the subpixels. Once we've properly filled the sample buffer, we then resolve the sample buffer to the frame buffer by averaging out each subpixel within each respective pixel to determine the averaged RGB value for the pixel. </p>
 
 		<p><i>Screenshots with varying sample rates:</i></p>
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;  border-spacing: 20px 10px">
 			  <tr>
-				<td style="text-align: center;">
-				  <img src="svg4.png" width="400px"/>
+				<td style="text-align: center; padding: 15px">
+				  <img src="svg4_1.png" width="400px"/>
 				  <figcaption>Sample rate 1</figcaption>
 				</td>
-				<td style="text-align: center;">
-				  <img src="svg4_sample4.png" width="400px"/>
+				<td style="text-align: center;padding: 15px">
+				  <img src="svg4_4.png" width="400px"/>
 				  <figcaption>Sample rate 4.</figcaption>
 				</td>
 			  </tr>
 			  <tr>
-				<td style="text-align: center;">
-				  <img src="svg4_sample9.png" width="400px"/>
+				<td style="text-align: center;padding: 15px">
+				  <img src="svg4_9.png" width="400px"/>
 				  <figcaption>Sample rate 9.</figcaption>
 				</td>
-				<td style="text-align: center;">
-				  <img src="svg4_sample16.png" width="400px"/>
+				<td style="text-align: center;padding: 15px">
+				  <img src="svg4_16.png" width="400px"/>
 				  <figcaption>Sample rate 16.</figcaption>
 				</td>
 			  </tr>
@@ -128,16 +132,51 @@
 
 		<h2>Task 3: Transforms</h2>
 		<p><i>Screenshot of cubeman and what we were trying to do with him</i></p>
+		<figure>
+			<img src="robot.png" alt="transform-robot" style="width:50%"/>
+			<figcaption>We turned our robot into a superman pose by lifting his arm and arranging his other arm and legs at an angle to make him look as if he's flying, which involved rotating and translating his limbs and also scaling his head size to make his body look more buff.</figcaption>
+		</figure>
 
 		<h2>Task 4: Barycentric coordinates</h2>
-		<p><i>Explain barycentric coordinates</i></p>
+		<p><i>Explain barycentric coordinates with an image to aid in the explanation</i></p>
+		<p>Barycentric coordinates allow us to linearly interpolate values at vertices by representing the sample point as a weighted combination of the three triangle vertices instead of in regular Cartesian coordinates. This interpolation creates a smoothly varying surface inside the triangle, which is useful for when we want a continuous spectrum. ADD MORE HERE</p>
 
 		<p><i>Screenshot of test7.svg with default viewing parameters and sample rate 1</i></p>
+		<figure>
+			<img src="svg7.png" alt="test7" style="width:50%"/>
+			<figcaption>test7.svg with default viewing parameters and sample rate 1</figcaption>
+		</figure>
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
 		<p><i>Explain pixel sampling and how we implemented it to perform texture mapping. Discuss 2 different pixel sampling methods (nearest and bilinear)</i></p>
+		<p>Pixel sampling is the method of mapping a texture onto a triangle by sampling the color of the texel (u,v) that is nearest to the barycentric coordinates of the pixel. This method is straightforward, but can create alisasing artifacts. We examined two different pixel sampling methods: nearest and bilinear. Nearest sampling (also known as nearest neighbor sampling) takes the color of the texel that is closest to the barycentric coordinates of the pixel. On the other hand, bilinear sampling takes a weighted average of the four nearest texels surrounding the barycentric coordinates through 3 LERPs (linear interpolations). Bilinear sampling tends to have a blurred effect as compared to nearest sampling. After determining the texel value, we use the texel value to fill in the pixel value. </p>
 
-		<p><i>Screenshots to show and compare bilinear sampling at different rates and comment on differences</i></p>
+		<p><i>Screenshots to show and compare nearest vs bilinear sampling at different rates and comment on differences</i></p>
+		
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;  border-spacing: 20px 10px">
+			  <tr>
+				<td style="text-align: center; padding: 15px">
+				  <img src="nearest_1.png" width="400px"/>
+				  <figcaption>Nearest sampling, sample rate 1</figcaption>
+				</td>
+				<td style="text-align: center;padding: 15px">
+				  <img src="nearest_16.png" width="400px"/>
+				  <figcaption>Nearest sampling, sample rate 16.</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;padding: 15px">
+				  <img src="bilinear_1.png" width="400px"/>
+				  <figcaption>Bilinear sampling, sample rate 1.</figcaption>
+				</td>
+				<td style="text-align: center;padding: 15px">
+				  <img src="bilinear_16.png" width="400px"/>
+				  <figcaption>Bilinear sampling, sample rate 16.</figcaption>
+				</td>
+			  </tr>
+			</table>
+
 
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
 		<p><i>Explain level sampling and how we implemented it for texture mapping</i></p>
