@@ -98,10 +98,14 @@
 		</div>-->
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
-		<p><i>Supersampling Algorithm and Data Structures Walkthrough:</i></p>
+		<p><b><i>Supersampling Algorithm and Data Structures Walkthrough:</i></b></p>
+			<p>To implement supersampling, we first initialized the sample buffer to be of size \(width * height * sample\_rate\) in order to store the subpixel information we gained from sampling at a higher frequency. After initializing the sample buffer, we modified <code>rasterize_triangle()</code> to add support for super sampling by adding an inner nested for loop that loops over each pixel \(NxN\) times, where N is \(\sqrt(sample\_rate)\). To calculate the center of the subpixel, we used the formula \[pixel\_x + (sample\_index\_x + 0.5) * (1/(\sqrt(sample\_rate)))\] where \(pixel\_x\) is the x-coordinate of the pixel, \(sample\_index\_x\) is the x-coordinate of the subpixel, and \(\sqrt(sample\_rate)\) is the square root of the sample rate. We did the same for the y-coordinate.
+
+			After calculating the center of the subpixel, we then checked if the subpixel was inside the triangle by with the three line point test as implemented in task 1. If the subpixel was inside the triangle, we set the sample buffer at index \[(pixel\_y*width + pixel\_x) * sample\_rate + (sample\_index\_y* \sqrt(sample\_rate) + sample\_index\_x)\] to the color of the triangle. Once we've properly filled the sample buffer, we then resolve the sample buffer to the frame buffer by averaging out each subpixel within each respective pixel to determine the averaged RGB value for the pixel, and save that averaged color to the framebuffer. 
+			</p>
 
 		<p><i>Why is supersampling useful? What modifications did you make to the rasterization pipeline in the process? Explain how you used supersampling to antialias your triangles.</i></p>
-			<p>Supersampling is the method involving first sampling at a higher frequency where each pixel has \(NxN\) samples then downsampling by averaging the subpixel values. We had to make modifications to the rasterization pipeline by introducing a sample buffer of size width by height by sample rate in order to store the color values of each subpixel at index \(y*width + x) * sample_rate + (i*sqrt(sample_rate) + j), where (x,y) is the coordinate of the pixel and (i,j) is the inner coordinate of the subpixels. Once we've properly filled the sample buffer, we then resolve the sample buffer to the frame buffer by averaging out each subpixel within each respective pixel to determine the averaged RGB value for the pixel. </p>
+			<p>Supersampling is the method involving first sampling at a higher frequency where each pixel has \(NxN\) samples then downsampling by averaging the subpixel values, and it's useful because it's an antialiasing technique which can reduce jaggies and other artifacts to significantly improve the image quality. We had to make modifications to the rasterization pipeline by introducing a sample buffer of size width by height by sample rate and introducing another inner nested for loop to <code>rasterize_triangle()</code> which loops over each pixel \(NxN)\ times. We also had to modify how the sample buffer resolved to the frame buffer by making sure we had to average out the subpixels within each pixel. Supersampling antialiased our triangles by smoothing out the jagged edges with averaged pixel color values, rather than harsh jaggies. </p>
 
 		<p><i>Screenshots with varying sample rates:</i></p>
 
@@ -130,16 +134,22 @@
 			</table>
 		</div>
 
+		<p>As the sampling rate increases, the jaggies become smoother and smoother and the overall quality of the image sharpens. This is because as we increase the supersampling rate, we're taking more samples per pixel and storing these into our sample buffer, giving us much more fine-grained detail that we can average out for the final pixel value. This is especially helpful for jaggies at sharp triangle vertices, where the triangle might be broken at low sampling rates, but we can see it becomes much more blurred and smooth and connected as the sampling rate incrased to 9 and 16 in the above screenshots.</p>
+
 		<h2>Task 3: Transforms</h2>
 		<p><i>Screenshot of cubeman and what we were trying to do with him</i></p>
 		<figure>
 			<img src="robot.png" alt="transform-robot" style="width:50%"/>
-			<figcaption>We turned our robot into a superman pose by lifting his arm and arranging his other arm and legs at an angle to make him look as if he's flying, which involved rotating and translating his limbs and also scaling his head size to make his body look more buff.</figcaption>
+			<figcaption>We turned our robot into a superman pose by lifting his arm and arranging his other arm and legs at an angle to make him look as if he's flying, which involved rotating and translating his limbs and also scaling his head size down to make his body look more buff.</figcaption>
 		</figure>
 
 		<h2>Task 4: Barycentric coordinates</h2>
 		<p><i>Explain barycentric coordinates with an image to aid in the explanation</i></p>
-		<p>Barycentric coordinates allow us to linearly interpolate values at vertices by representing the sample point as a weighted combination of the three triangle vertices instead of in regular Cartesian coordinates. This interpolation creates a smoothly varying surface inside the triangle, which is useful for when we want a continuous spectrum. ADD MORE HERE</p>
+		<p>Barycentric coordinates allow us to linearly interpolate values at vertices by representing the sample point as a weighted combination of the three triangle vertices instead of in regular Cartesian coordinates. This interpolation creates a smoothly varying surface inside the triangle, which is useful for when we want a continuous spectrum. In this triangle with one yellow vertex, one black vertex, and one reduce vertex, we're able to produce a smoothly blended color triangle gradient through barycentric coordinates. </p> 
+		<figure>
+			<img src="bary_tri.png" alt="barycentric" style="width:50%"/>
+			<figcaption>Example of barycentric coordinates in a triangle with one yellow vertex, one black vertex, and one red vertex</figcaption>
+		</figure>
 
 		<p><i>Screenshot of test7.svg with default viewing parameters and sample rate 1</i></p>
 		<figure>
