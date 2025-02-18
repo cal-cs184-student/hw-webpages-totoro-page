@@ -28,7 +28,7 @@
 	<body>
 		<div class="container">
 		<h1>CS184/284A Spring 2025 Homework 1 Write-Up</h1>
-		<div style="text-align: center;">Names: Annabel Ng (3038330323) and Henry Ko (Henry ID) </div>
+		<div style="text-align: center;">Names: Annabel Ng (3038330323) and Henry Ko (3034941989) </div>
 
 		<br>
 
@@ -51,6 +51,7 @@
 		<p><i>Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.</i></p>
 
 		<p>In this homework, we implemented basic rasterization pipelines as well as antialiasing techniques. We also implemented texture mapping with pixel sampling and level sampling, and explored transforms as well as barycentric coordinates. 
+			We also saw how mipmaps work and how the right level of mipmap can be chosen for different parts of rassterized image.
 		</p>
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
@@ -105,7 +106,7 @@
 			</p>
 
 		<p><i>Why is supersampling useful? What modifications did you make to the rasterization pipeline in the process? Explain how you used supersampling to antialias your triangles.</i></p>
-			<p>Supersampling is the method involving first sampling at a higher frequency where each pixel has \(NxN\) samples then downsampling by averaging the subpixel values, and it's useful because it's an antialiasing technique which can reduce jaggies and other artifacts to significantly improve the image quality. We had to make modifications to the rasterization pipeline by introducing a sample buffer of size width by height by sample rate and introducing another inner nested for loop to <code>rasterize_triangle()</code> which loops over each pixel \(NxN)\ times. We also had to modify how the sample buffer resolved to the frame buffer by making sure we had to average out the subpixels within each pixel. Supersampling antialiased our triangles by smoothing out the jagged edges with averaged pixel color values, rather than harsh jaggies. </p>
+			<p>Supersampling is the method involving first sampling at a higher frequency where each pixel has \(NxN\) samples then downsampling by averaging the subpixel values, and it's useful because it's an antialiasing technique which can reduce jaggies and other artifacts to significantly improve the image quality. We had to make modifications to the rasterization pipeline by introducing a sample buffer of size width by height by sample rate and introducing another inner nested for loop to <code>rasterize_triangle()</code> which loops over each pixel \(NxN\) times. We also had to modify how the sample buffer resolved to the frame buffer by making sure we had to average out the subpixels within each pixel. Supersampling antialiased our triangles by smoothing out the jagged edges with averaged pixel color values, rather than harsh jaggies. </p>
 
 		<p><i>Screenshots with varying sample rates:</i></p>
 
@@ -197,11 +198,54 @@
 			
 		<p>Higher differentials indicate that the texture is changing a lot and being "stretched" over a specific area, and therefore needs a higher resolution texture in order to reduce antialiasing effects and preserve detail. On the other hand, smaller differentials indicate that the texture is not being changed a lot and therefore does not need a higher resolution texture since the texture is being so compressed when it's viewed from a farther distance. By determining the proper level, we can determine what mipmap level to use at different locations. </p>
 
-		<p>To implement level sampling, we first computed the texture differentials (du/dx, dv/dx, du/dy, dv/dy) from neighboring texture samples. ADD MORE DETAIL HERE</p>
+		<p>To implement level sampling, we first computed the texture differentials (du/dx, dv/dx, du/dy, dv/dy) from neighboring texture samples. Each differential tells us the rate of change of texture coordinates per pixels in the screen space, which helps us determine which mipmap level to use.</p>
+
+		<p>As given in the spec, we compute the texture coordinates for \((x + 1, y)\) and \((x, y + 1)\). This gives us \((du/dx, dv/dx)\) and \((du/dy, dv/dy)\). We then use this to calculate the approporiate level using the formula below from lecture:</p>
+		<p>\[L = \log_2 \left( \max \left( \sqrt{(du/dx)^2 + (dv/dx)^2}, \sqrt{(du/dy)^2 + (dv/dy)^2} \right) \right)\]</p>
 
 		<p><i>Tradeoffs in speed, memory usage, antialiasing between pixel sampling, level sampling, or number of samples per pixel</i></p>
+		<ul>
+			<li>Pixel Sampling: <br>
+				<ul>- Nearest is always faster, but produces more jaggies and images that are less smooth. Bilinear sampling produces smoother transitions but is slower.</ul>
+			</li>
+			<li>Level Sampling: <br>
+				<ul>- L_ZERO uses the highest resolution texture, but this can create aliasing(moire or flickering) especially if the texture map is stretched a lot.</ul>
+				<ul>- L_NEAREST reduces aliasing by selecting a mipmap level that reflects the rate of change in texture coordinates. However, since it only loads from a single mipmap level it may leave aliasing effects in scenarios where an approriate texture is a mix of two mipmaps levels. (e.g. ideal mipmap level is between 2 and 3, but we only load a mipmap level of 2.</ul>
+				<ul>- L_LINEAR addresses such scenarios that L_NEAREST might perform poorly on by mixing the weighted sum of textures in two mipmap levels. This creates smoother mipmap results since it blends two mipmap levels, but it comes at an expensive performance cost since we now have to load two mipmap levels and perform additional computations for the weighted average between the two.</ul>
+			</li>
+			<li>Number of Samples per Pixel: <br>
+				<ul>- Increasing the number of samples per pixel helps prevent aliasing, but is quite costly in terms of both latency and memory. Latency-wise, there's increased computation as we have to loop through additional \(NxN\) samples per each pixel. There is also the additional iterations for downsampling the sample buffer back to the frame buffer. Memory-wise, the size of our sample buffer is increased to \((size\_of\_framebuffer) * (NxN)\) to account for indexing all supersampled sub-pixels. This creates a burden not only for naive storage, but also when it comes to loading from or storing on the cache.</ul>
+			</li>
+		</ul>
+		<p>Below are 4 versions of a mix of different combinations of pixel sampling, level sampling, and number of samples per pixel. The first one(top left) is the cheapest where we use nearest sampling, L_ZERO sampling, and no super-sampling. Though it is cheap, we see jaggies when zoomed in.</p>
+		<p>The next two combinations(top right, bottom left) are a good balance of performance and antialiasing. Between the two, we can see that when the level sampling method is set to linear we see the tree leaves transition more smoothly, although in this case it amy seem a bit too blurry since the leaves are too close together.</p>
+		<p>The most expensive combination(bottom right) is bilinear pixel sampling, linear level sampling, and a supersampling rate of 16 samples per pixel. Although the performance overhead is extremely large compared to our previous methods, the resulting visual effects do not seem that profoundly different from our middle two combinations.</p>
 
-		<p><i>Show 4 versions of a png image with different combinations </i></p>
+		<!-- <p><i>Show 4 versi/ons of a png image with different combinations </i></p> -->
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;  border-spacing: 20px 10px">
+			  <tr>
+				<td style="text-align: center; padding: 15px">
+				  <img src="task6_0.png" width="400px"/>
+				  <figcaption>(Most Cheap) Nearest sampling; Level zero; Sample rate 1</figcaption>
+				</td>
+				<td style="text-align: center;padding: 15px">
+				  <img src="task6_1.png" width="400px"/>
+				  <figcaption>Bilinear sampling; Level nearest; Sample rate 4</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;padding: 15px">
+				  <img src="task6_2.png" width="400px"/>
+				  <figcaption>Bilinear sampling; Level linear; Sample rate 9</figcaption>
+				</td>
+				<td style="text-align: center;padding: 15px">
+				  <img src="task6_3.png" width="400px"/>
+				  <figcaption>(Most Expensive) Bilinear sampling; Level linear; Sample rate 16</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
 
 
 		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
