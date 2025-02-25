@@ -53,41 +53,86 @@
 		<h2>Section I: Bezier Curves and Surfaces</h2>
 
 		<h3>Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p><i>Briefly explain de Casteljau’s algorithm and how you implemented it in order to evaluate Bezier curves.</i></p>
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+		<p>De Casteljau's algorithm evaluates Bezier curves by successively computing intermediate control points through linear interpolation. The algorithm starts with a set of n control points and recursively reduces the number of control points by interpolating between adjacent points. The recursive process continues until a single final point is reached, which lies directly on the Bezier curve at the specified given parameter \(t\). We use the equaion to recursively compute the \(n-1\) intermediate control points in the next level by using the equation \[p'_i = lerp(p_i, p_{i+1},t) = (1-t)p_i + t*p_{i+1}\]</p>
+
+		<p>We implemented this algorithm in our code by creating a new <code>2DVector</code> to store our intermediary control points at each level. We iterated from 0 to n-1, and within each iteration, we calculated the LERP for both the x and y coordinate with the equation \[(1-t)p_i + t*p_{i+1}\]. We stored the LERPed x and y within a new <code>2DVector</code> and used <code>push_back</code> to insert it into our new_points. We return all of the intermediary points at the end of the function.</p>
+
+
+		<p><i>Table with Bezier curves cycling through all the levels</i></p>
+
+		<!--Table with all 5 levels and curve6 at the end-->
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="level1.png" width="400px"/>
+				  <figcaption>Level 1</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="level2.png" width="400px"/>
+				  <figcaption>Level 2</figcaption>
 				</td>
-			  </tr>
-			  <tr>
+			  
+
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="level3.png" width="400px"/>
+				  <figcaption>Level 3</figcaption>
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align: center;">
+				  <img src="level4.png" width="400px"/>
+				  <figcaption>Level 4</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+					<img src="level5.png" width="400px"/>
+					<figcaption>Level 5</figcaption>
 				</td>
+				<td style="text-align: center;">
+					<img src="curve6.png" width="400px"/>
+					<figcaption>Level 6, completed curve</figcaption>
+				</td>
+				
 			  </tr>
 			</table>
 		</div>
 
+
+		<figure>
+			<img src="diffcurve.png" alt="Second bezier curve" style="width:50%"/>
+			<figcaption>Slightly different Bezier curve with different parameter t</figcaption>
+		</figure>
+
+
 		<h3>Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p><i>Briefly explain how de Casteljau algorithm extends to Bezier surfaces and how you implemented it in order to evaluate Bezier surfaces.</i></p>
+
+		<p>The de Casteljau algorithm </p>
 
 		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
 
 		<h3>Part 3: Area-weighted vertex normals</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<p><i>Briefly explain how you implemented the area-weighted vertex normals.</i></p>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  	<tr>
+					<td style="text-align: center;">
+					<img src="notsmooth.png" width="400px"/>
+					<figcaption>Default flat shading</figcaption>
+					</td>
+					<td style="text-align: center;">
+					<img src="smooth.png" width="400px"/>
+					<figcaption>Phong shading</figcaption>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+
 
 		<h3>Part 4: Edge flip</h3>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
