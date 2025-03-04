@@ -52,9 +52,9 @@
 		
 		<p>In this homework, we implemented Bezier curves using the de Casteljau algorithm, and learned how to recursively compute intermediate control points through linear interpolation to create smooth curves and surfaces. We extended this algorithm to compute Bezier surfaces by applying the de Casteljau algorithm in two dimensions.</p>
 
-		<p>We also learned how to represent surfaces with triangle meshes, which are collections of triangles that can be used to approximate complex shapes. We implemented a half-edge data structure to represent these triangle meshes, which allowed us to efficiently store and manipulate mesh data. This data structure is particularly useful for supporting mesh operations like edge flips, edge splits, and loop subdivision. Edge flips and splits allowed us to manipulate the mesh topology, while loop subdivision allowed us to upsample the mesh and create smoother surfaces. We also implemented area-weighted vertex normals for Phong shading, which is important for rendering smoother and more realistic images.</p> 
+		<p>We also learned how to represent surfaces with triangle meshes, which are collections of triangles that can be used to approximate complex shapes. We worked with a half-edge data structure to represent these triangle meshes, which allowed us to efficiently store and manipulate mesh data. This data structure is particularly useful when we implemented mesh operations like edge flips, edge splits, and loop subdivision. Edge flips and splits allowed us to manipulate the mesh topology, while loop subdivision allowed us to upsample the mesh and create smoother surfaces. We also implemented area-weighted vertex normals for Phong shading, which is important for rendering smoother and more realistic images.</p> 
 			
-		<p>Working with triangle meshes was particularly tedious, since we had to be careful about reassigning pointers and keeping track of new and old vertices, especially for edge splits and loop subdivision, but we learned a lot about how to represent and manipulate complex shapes in computer graphics. It also gave us a deeper appreciation for smooth shading and how it can be achieved through careful mesh manipulation, and we also realized how much data we need to store in order to represent a mesh.</p>
+		<p>Working with triangle meshes was particularly tedious, since we had to be careful about reassigning pointers of every single element in the mesh while keeping track of new and old elements, especially for edge splits and loop subdivision, but we learned a lot about how to represent and manipulate complex shapes in computer graphics. It also gave us a deeper appreciation for smooth shading and how it can be achieved through careful mesh manipulation, and we also realized how much data we need to store in order to represent a mesh.</p>
 
 		<h2>Section I: Bezier Curves and Surfaces</h2>
 
@@ -63,7 +63,7 @@
 
 		<p>De Casteljau's algorithm evaluates Bezier curves by successively computing intermediate control points through linear interpolation. The algorithm starts with a set of n control points and recursively reduces the number of control points by interpolating between adjacent points. The recursive process continues until a single final point is reached, which lies directly on the Bezier curve at the specified given parameter \(t\). We use the equaion to recursively compute the \(n-1\) intermediate control points in the next level by using the equation \[p'_i = lerp(p_i, p_{i+1},t) = (1-t)p_i + t*p_{i+1}\]</p>
 
-		<p>We implemented this algorithm in our code by creating a new <code>2DVector</code> to store our intermediary control points at each level. We iterated from 0 to n-1, and within each iteration, we calculated the LERP for both the x and y coordinate with the equation \[(1-t)p_i + t*p_{i+1}\] We stored the LERPed x and y within a new <code>2DVector</code> and used <code>push_back</code> to insert it into our <code>new_points</code>. We return all of the intermediary points at the end of the function. </p>
+		<p>We implemented this algorithm in our code by creating a new <code>2DVector</code> called <code>new_points</code> to store our intermediary control points at each level. We iterated from 0 to n-1, and within each iteration, we calculated the LERP for both the x and y coordinate with the equation \[(1-t)p_i + t*p_{i+1}\] We stored the LERPed x and y within a new <code>2DVector</code> and used <code>push_back</code> to insert it into our <code>new_points</code>. We return all of the intermediary points at the end of this evaluation function, and after running this evaluation function <code>n-1</code> times by pressing E on the GUI, we can display all of the intermediate control points from each level, as well as the final evaluated point and the final Bezier curve. </p>
 
 		<p><i>Table with Bezier curves cycling through all the levels</i></p>
 
@@ -97,7 +97,7 @@
 				</td>
 				<td style="text-align: center;">
 					<img src="curve6.png" width="400px"/>
-					<figcaption>Level 6, completed curve</figcaption>
+					<figcaption>Level 5 with completed Bezier curve</figcaption>
 				</td>
 				
 			  </tr>
@@ -116,7 +116,7 @@
 
 		<p>We can extend the de Casteljau algorithm to Bezier surfaces by applying the same recursive interpolation process across parameters <code>u</code> and <code>v</code> instead of just parameter <code>t</code>. Since a Bezier surface is defined by a <code>(NxN)</code> 2D array of control points, we can think of it as a collection of Bezier curves in both the <code>u</code> and <code>v</code> directions. This allows us to evaluate the surface at any point by interpolating between the control points in both dimensions.</p> 
 
-		<p>To implement this, we first write a helper function to recursively interpolate between 3D points (instead of just 2D points like we did for Bezier curves) for a single parameter <code>t</code> until we reduce down to a single final point. This involved calculating the same recursive equation for the x, y, and z dimensions \[p'_i = (1-t)p_i + t*p_{i+1}\] and looping until we hit a single final point. Once we have our 3D helper functions, we apply the de Casteljau algorithm to our <code>(NxN)</code>patch along the <code>u</code> dimension, effectively reducing each row into a single point. Once we've reduced over our rows and produced <code>N</code> intermediate control points, we apply the aplogirhtm again along the other dimension <code>v</code> to reduce over the column and compute the final point on the surface, allowing us to extend de Castelaju to evaluate Bezier surfaces.</p>
+		<p>To implement this, we first write a helper function to recursively interpolate between 3D points (instead of just 2D points like we did for Bezier curves) for a single parameter <code>t</code> until we reduce down to a single final point. This involved calculating the same recursive equation for the x, y, and z dimensions \[p'_i = (1-t)p_i + t*p_{i+1}\] and looping until we hit a single final point. Once we have our 3D helper functions, we apply the de Casteljau algorithm to our <code>(NxN)</code>patch along the <code>u</code> dimension, effectively reducing each row into a single point. Once we've reduced over our rows and produced <code>N</code> intermediate control points, we apply the algorithm again along the other dimension <code>v</code> to reduce over the column and compute the final point on the surface, allowing us to extend de Castelaju to evaluate Bezier surfaces.</p>
 		</p>
 
 		<figure>
@@ -129,7 +129,7 @@
 		<h3>Part 3: Area-weighted vertex normals</h3>
 
 		<p><i>Briefly explain how you implemented the area-weighted vertex normals.</i></p>
-		<p>To implement area-weighted vertex normals, we first grab the class member variable <code>position</code> and the halfedge, and make sure to store the original halfedge. We also initialize a <code>curr_normal</code> vector to be <code>(0,0,0)</code>. We then iterate through all the faces incident to the current position, and within each face, we grab the neighboring vertices and the corresponding edges. Once we have all 3 edges of the face, we compute the triangle normal of this specific face by taking the cross product, and compute the triangle area by taking \[0.5|a||b|sin\theta\] which is equivalent to taking half of the norm of the cross product. We add the triangle area to the <code>curr_normal</code> vector and then iterate to the next face by calling <code>h = h_twin->next()</code> where <code>h_twin</code> is the twin of the starting half edge of that face. We continue iterating until <code>h == original</code>, which signals that we're back to the starting point. Lastly, we return the <code>unit()</code> of the final <code>curr_normal</code> since we don't care about the magnitude of the vertex normal - just the direction. </p>
+		<p>To implement area-weighted vertex normals, we first grab the class member variable <code>position</code> and the halfedge, and make sure to store the original halfedge. We also initialize a <code>curr_normal</code> vector to be <code>(0,0,0)</code> and we'll use this vector to accumulate the sum of the triangle areas. We then iterate through all the faces incident to the current position, and within each face, we grab the neighboring vertices and the corresponding edges. Once we have all 3 edges of the current face, we compute the triangle normal of this specific face by taking the cross product, and compute the triangle area by taking \[0.5|a||b|sin\theta\] which is equivalent to taking half of the norm of the cross product. We add the triangle area to the <code>curr_normal</code> vector and then iterate to the next face by calling <code>h = h_twin->next()</code> where <code>h_twin</code> is the twin of the starting half edge of that face. We continue iterating until <code>h == original</code>, which signals that we're back to the starting point. Lastly, we return the <code>unit()</code> of the final <code>curr_normal</code> since we don't care about the magnitude of the vertex normal - just the direction. </p>
 		
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
@@ -150,12 +150,12 @@
 		<h3>Part 4: Edge flip</h3>
 		<p><i>Briefly explain how you implemented the edge flip operation and describe any interesting implementation / debugging tricks you have used.
 		</i></p>
-		<p>The edge flip operation on a shared edge between 2 triangles (a,b,c) and (c,b,d) involves flipping the shared edge (b,c) to convert the triangles into (a,d,c) and (a,b,d).  We implemented the edge flip operation by first grabbing all of the current elements in the mesh, including all half edges, edges, vertices, and faces. We then went through each element in the modified edge and reassigned its pointers to the correct element in the modified mesh with the edge split. This meant that we reassigned the <code>halfedge</code> pointer for each vertex, face, and edge, and then reassigned the <code>next, twiin, vertex, edge, face</code> pointers for each <code>halfedge</code> element. Once we reassigned all the pointers, we returned the new mesh. </p>
+		<p>The edge flip operation on a shared edge between 2 triangles (a,b,c) and (c,b,d) involves flipping the shared edge (b,c) to convert the triangles into (a,d,c) and (a,b,d).  We implemented the edge flip operation by first grabbing all of the current elements in the mesh, including all half edges, edges, vertices, and faces. We make sure to check if either of the faces adjacent to the given halfedge <code>e0</code> is on a boundary loop - if it is, we just return immediately. If not a boundary edge, we then went through each element in the modified edge and reassigned its pointers to the correct element in the modified mesh with the edge split. This meant that we reassigned the <code>halfedge</code> pointer for each vertex, face, and edge, and then reassigned the <code>next, twin, vertex, edge, face</code> pointers for each <code>halfedge</code> element. Once we reassigned all the pointers, we returned the new mesh. It was very useful to draw out a map of every single element before and after the flip and label our variables corresponding to our drawn map, otherwise we got very lost when trying to reassign pointers. </p>
 
-		<p>As for debugging: when we first tried implementing flip edge, we tried to get away with not having to reassign every single pointer and it didn't work and ended up giving us a lot of holes when we flipped. We then tried using <code>setNeighbors</code> to set all the attributes of each <code>halfedge</code> at once, which seemed to work, but we also had a few occasional holes pop up. We also saw the flip case which created a dent and thought that we had a buggy implementation, so we redid our whole flip operation with the very thorough pointer reassignment, and then realized we still had the dent case, so we went into office hours and realized that the dent was expected behavior. </p>
+		<p>As for debugging: when we first tried implementing flip edge, we tried to get away with not having to reassign every single pointer and it didn't work and ended up giving us a lot of holes when we flipped an edge more than one time. We then tried using <code>setNeighbors</code> to set all the attributes of each <code>halfedge</code> at once, which seemed to work, but we also had a few occasional holes pop up. We also ran into a flip case which created a dent in the teapot and thought that we had a buggy implementation, so we redid our whole flip operation with the very thorough pointer reassignment for every single mesh element. However, we realized we still had the dent case, so we went into office hours and realized that the dent was expected behavior. </p>
 
 		<figure>
-			<img src="flip.png" alt="Teapot before edge flip" style="width:50%"/>
+			<img src="flip.png" alt="Teapot before edge flip" style="width:40%"/>
 			<figcaption>Very helpful map for reassigning pointers before / after a flip</figcaption>
 		</figure>
 
@@ -178,7 +178,7 @@
 					</td>
 					<td style="text-align: center;">
 					<img src="zoomflip.png" width="400px"/>
-					<figcaption>Zoom pf Teapot after 4 flips</figcaption>
+					<figcaption>Zoom of Teapot after 4 flips</figcaption>
 					</td>
 				</tr>
 			</table>
