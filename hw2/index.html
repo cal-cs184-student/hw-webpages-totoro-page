@@ -147,11 +147,17 @@
 			</table>
 		</div>
 
-
-
 		<h3>Part 4: Edge flip</h3>
 		<p><i>Briefly explain how you implemented the edge flip operation and describe any interesting implementation / debugging tricks you have used.
 		</i></p>
+		<p>The edge flip operation on a shared edge between 2 triangles (a,b,c) and (c,b,d) involves flipping the shared edge (b,c) to convert the triangles into (a,d,c) and (a,b,d).  We implemented the edge flip operation by first grabbing all of the current elements in the mesh, including all half edges, edges, vertices, and faces. We then went through each element in the modified edge and reassigned its pointers to the correct element in the modified mesh with the edge split. This meant that we reassigned the <code>halfedge</code> pointer for each vertex, face, and edge, and then reassigned the <code>next, twiin, vertex, edge, face</code> pointers for each <code>halfedge</code> element. Once we reassigned all the pointers, we returned the new mesh. </p>
+
+		<p>As for debugging: when we first tried implementing flip edge, we tried to get away with not having to reassign every single pointer and it didn't work and ended up giving us a lot of holes when we flipped. We then tried using <code>setNeighbors</code> to set all the attributes of each <code>halfedge</code> at once, which seemed to work, but we also had a few occasional holes pop up. We also saw the flip case which created a dent and thought that we had a buggy implementation, so we redid our whole flip operation with the very thorough pointer reassignment, and then realized we still had the dent case, so we went into office hours and realized that the dent was expected behavior. </p>
+
+		<figure>
+			<img src="flip.png" alt="Teapot before edge flip" style="width:50%"/>
+			<figcaption>Very helpful map for reassigning pointers before / after a flip</figcaption>
+		</figure>
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
@@ -177,8 +183,6 @@
 				</tr>
 			</table>
 		</div>
-
-		<p><i>Write about your eventful debugging journey</i></p>
 
 		<h3>Part 5: Edge split</h3>
 		<p><i>Briefly explain how you implemented the edge split operation and describe any interesting implementation / debugging tricks you have used.
