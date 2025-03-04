@@ -188,11 +188,74 @@
 		<p><i>Briefly explain how you implemented the edge split operation and describe any interesting implementation / debugging tricks you have used.
 		</i></p>
 
-		<p><i>Debugging Journey</i></p>
+		<p>We implemented edge split by first saving all elements(halfedges, vertices, faces) before adding or changing any elements. 
+			We save this copy to keep a snapshot of the original mesh as reference. Before we reassign pointers, we need to create a new vertex of the midpoint, new halfedges, edges, and faces that is a product of our splitting operation. 
+			This is because splitting an edge results in more elements added to the mesh. Next, we start reassigning elements accordingly just like we did in edgeFlip function. 
+			Keeping track of all the right pointer assignments was the hardest part and we found that drawing a diagram of the before and after components helped with debugging a lot. Below is a zoomed-in screenshot of applying edge split on two edges.
+		</p>
 
 		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
-		<p><i></i></p>
+		<p><i>- Briefly explain how you implemented the loop subdivision and describe any interesting implementation / debugging tricks you have used.</i></p>
+		<p>Loop subdivision involves two steps: subdividing each triangle in the mesh into four by connecting all of their edge midpoints(4-1 subdivision) and then upudating all the vertex positions as an weighted average of each of their neighboring vertex coordinates. This is the high-level overview, but implementing this requires more detail.
+<br><br>
+			Starting with 4-1 subdivision, we first computed new positions for all vertices in the original input mesh before doing any editing of the mesh. We calculated each position of an old vertex as (1 - n * u) * original_position + u * original_neighbor_position_sum where n is the vertex degree and u:3/16 if n=3, 3/(8n) otherwise. This new position data is stored as a Vertex::newPosition attribute, since we only want to update the vertex position after all edits on the mesh are done. Similiarly, we also precompute the positions of all the midpoints that will be added after the edge split operation. We calculate each position of an new vertex to be added as (3/8) * (A + B) + (1/8) * (C + D) where A, B, C, and D are vertices that surround a split edge and A-B edge is the edge that is split.
+			<br><br>
+			We then proceed to implement 4-1 subdivision by first splitting all the old edges in the mesh and then flipping only the new edges that connect an old vertex with a new vertex. Specifically, we traverse through all the old edges of the mesh by checking if the two vertices are both not new while marking the newly added vertex as new to avoid infinity loops. Then we traverse through all the new edges of the mesh and flip them only if the XOR of the two vertices connecting the edge is true(i.e. v0 is new while v1 is not, or vice versa).
+			<br><br>
+			Finally, we traverse through all the vertices and update their positions with Vertex::newPosition to reflect the true, updated position of each vertex after all mesh editing operations are finished.</p>
+<br>
 
+<div style="display: flex; flex-direction: column; align-items: center;">
+	<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			<tr>
+			<td style="text-align: center;">
+			<img src="cow_before_upsample.png" width="400px"/>
+			<figcaption>Cow before loop subdivision</figcaption>
+			</td>
+			<td style="text-align: center;">
+			<img src="cow_after_upsample.png" width="400px"/>
+			<figcaption>Cow after 3 loop subdivisions</figcaption>
+			</td>
+		</tr>
+	</table>
+</div>
+
+			<p><i>- Take some notes, as well as some screenshots, of your observations on how meshes behave after loop subdivision. What happens to sharp corners and edges? Can you reduce this effect by pre-splitting some edges?</i></p>
+<p>Loop subdivision allows our meshes to have much smoother surfaces. Here are some screenshots of the cow mesh where we compare the before and after for subdivisions. We also see that sharp corners and edges "die" down as well as they are smoothened out. We can prevent such collapses of our sharp edges by pre-splitting edges. This works since by pre-splitting we are increased the number of edges, thus increasing the number of vertices to be used
+	as control points. This affects our averaging done during loop subdivision to reflect finer differences and, thus, preserving sharp features better.
+</p>
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+	<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			<tr>
+			<td style="text-align: center;">
+			<img src="vanillaCube_before.png" width="400px"/>
+			<figcaption>Cube WITHOUT pre-edgeSplits (Before)</figcaption>
+			</td>
+			<td style="text-align: center;">
+			<img src="vanillaCube_after.png" width="400px"/>
+			<figcaption>Cube WITHOUT pre-edgeSplits (After)</figcaption>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;">
+			<img src="goodCube_before.png" width="400px"/>
+			<figcaption>Cube WITH pre-edgeSplits (Before)</figcaption>
+			</td>
+			<td style="text-align: center;">
+			<img src="goodCube_after.png" width="400px"/>
+			<figcaption>Cube WITH pre-edgeSplits (After)</figcaption>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<p><i>- Can you pre-process the cube with edge flips and splits so that the cube subdivides symmetrically? Document these effects and explain why they occur. 
+	Also explain how your pre-processing helps alleviate the effects.</i></p>
+<p>The assymetric aspect arises during subsequent subdivisions because each face has only one diagonal edge going across. However, by splitting this edge on each face to result a total of 4 edges for each cube's face can help make the cube symmetric.
+	This is because with this pre-processing edge-split, each face of the cube now has exactly the same configuration.
+</p>
+<br>
 		<h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
