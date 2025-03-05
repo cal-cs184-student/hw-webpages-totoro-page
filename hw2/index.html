@@ -186,8 +186,17 @@
 
 		<h3>Part 5: Edge split</h3>
 
+		<p><i>Briefly explain how you implemented the edge split operation and describe any interesting implementation / debugging tricks you have used.
+		</i></p>
+
+		<p>We implemented edge split by first saving all elements(halfedges, vertices, faces) before adding or changing any elements. 
+			We save this copy to keep a snapshot of the original mesh as reference. Before we reassign pointers, we need to create a new vertex of the midpoint, new halfedges, edges, and faces that is a product of our splitting operation. 
+			This is because splitting an edge results in more elements added to the mesh. Next, we start reassigning elements accordingly just like we did in edgeFlip function. 
+			Keeping track of all the right pointer assignments was the hardest part and we found that drawing a diagram of the before and after components helped with debugging a lot. Below is a zoomed-in screenshot of applying edge split on two edges.
+		</p>
+
 		<figure>
-			<img src="edgeSplit_work.jpg" alt="Teapot before edge flip" style="width:40%"/>
+			<img src="edgeSplit_work.jpg" alt="Teapot before edge flip" style="width:30%"/>
 			<figcaption>Hand-drawn map for reassigning pointers before / after a split</figcaption>
 		</figure>
 	
@@ -206,14 +215,10 @@
 			</table>
 		</div>
 
-		<p><i>Briefly explain how you implemented the edge split operation and describe any interesting implementation / debugging tricks you have used.
-		</i></p>
-
-		<p>We implemented edge split by first saving all elements(halfedges, vertices, faces) before adding or changing any elements. 
-			We save this copy to keep a snapshot of the original mesh as reference. Before we reassign pointers, we need to create a new vertex of the midpoint, new halfedges, edges, and faces that is a product of our splitting operation. 
-			This is because splitting an edge results in more elements added to the mesh. Next, we start reassigning elements accordingly just like we did in edgeFlip function. 
-			Keeping track of all the right pointer assignments was the hardest part and we found that drawing a diagram of the before and after components helped with debugging a lot. Below is a zoomed-in screenshot of applying edge split on two edges.
-		</p>
+		<figure>
+			<img src="flipsandsplits.png" alt="Teapot with both edge flip and split" style="width:40%"/>
+			<figcaption>Teapot with two edge flips and two splits</figcaption>
+		</figure>
 		<p>
 			As for extra debugging, we realized there was a bug in task 5 only after implementing task 6--we were seeing some edges undergoing more edge splits than necessary when undergoing loop subdivision. After thoroughly checking the pointer assignments done in task 5,
 			we noticed that we forgot to assign the vertices of the face to their corresponding halfedges, which resulted in incorrect mesh traversals in task 6. Task 6 was also solved after we assigned correct halfedges to the vertices.
