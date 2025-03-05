@@ -215,19 +215,19 @@
 			Keeping track of all the right pointer assignments was the hardest part and we found that drawing a diagram of the before and after components helped with debugging a lot. Below is a zoomed-in screenshot of applying edge split on two edges.
 		</p>
 		<p>
-			As for extra debugging, we realized there was a bug in task 5 only after implementing task 6--we were seeing some edges undergoing more edge splits than necessary when undergoing loop subidivision. After thoroughly checking the pointer assignments done in task 5,
-			we noticed that we forgot to assign the vertices of the face to their corresponding halfedges, which resulted in incorrect mesh traversals in task 6. Task 6 was also solvedd after we assigned correct halfedges to the vertices.
+			As for extra debugging, we realized there was a bug in task 5 only after implementing task 6--we were seeing some edges undergoing more edge splits than necessary when undergoing loop subdivision. After thoroughly checking the pointer assignments done in task 5,
+			we noticed that we forgot to assign the vertices of the face to their corresponding halfedges, which resulted in incorrect mesh traversals in task 6. Task 6 was also solved after we assigned correct halfedges to the vertices.
 		</p>
 
 		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
-		<p><i>- Briefly explain how you implemented the loop subdivision and describe any interesting implementation / debugging tricks you have used.</i></p>
-		<p>Loop subdivision involves two steps: subdividing each triangle in the mesh into four by connecting all of their edge midpoints(4-1 subdivision) and then upudating all the vertex positions as an weighted average of each of their neighboring vertex coordinates. This is the high-level overview, but implementing this requires more detail.
+		<p><i>Briefly explain how you implemented the loop subdivision and describe any interesting implementation / debugging tricks you have used.</i></p>
+		<p>Loop subdivision involves two steps: subdividing each triangle in the mesh into four by connecting all of their edge midpoints(4-1 subdivision) and then updating all the vertex positions as an weighted average of each of their neighboring vertex coordinates. This is the high-level overview, but implementing this requires more detail.
 <br><br>
-			Starting with 4-1 subdivision, we first computed new positions for all vertices in the original input mesh before doing any editing of the mesh. We calculated each position of an old vertex as (1 - n * u) * original_position + u * original_neighbor_position_sum where n is the vertex degree and u:3/16 if n=3, 3/(8n) otherwise. This new position data is stored as a Vertex::newPosition attribute, since we only want to update the vertex position after all edits on the mesh are done. Similiarly, we also precompute the positions of all the midpoints that will be added after the edge split operation. We calculate each position of an new vertex to be added as (3/8) * (A + B) + (1/8) * (C + D) where A, B, C, and D are vertices that surround a split edge and A-B edge is the edge that is split.
+			Starting with 4-1 subdivision, we first computed new positions for all vertices in the original input mesh before doing any editing of the mesh. We calculated each position of an old vertex as <code>(1 - n * u) * original_position + u * original_neighbor_position_sum</code> where <code>n</code> is the vertex degree and <code>u = 3/16</code> if <code>n=3</code>, otherwise <code>u = 3/(8n)</code>. This new position data is stored as a <code>Vertex::newPosition</code> attribute, since we only want to update the vertex position after all edits on the mesh are done. Similiarly, we also precompute the positions of all the midpoints that will be added after the edge split operation. We calculate each position of an new vertex to be added as <code>(3/8) * (A + B) + (1/8) * (C + D)</code> where A, B, C, and D are vertices that surround a split edge and A-B edge is the edge that is split.
 			<br><br>
-			We then proceed to implement 4-1 subdivision by first splitting all the old edges in the mesh and then flipping only the new edges that connect an old vertex with a new vertex. Specifically, we traverse through all the old edges of the mesh by checking if the two vertices are both not new while marking the newly added vertex as new to avoid infinity loops. Then we traverse through all the new edges of the mesh and flip them only if the XOR of the two vertices connecting the edge is true(i.e. v0 is new while v1 is not, or vice versa).
+			We then proceed to implement 4-1 subdivision by first splitting all the old edges in the mesh and then flipping <b>only</b> the new edges that connect an old vertex with a new vertex. Specifically, we traverse through all the old edges of the mesh by checking if the two vertices are both not new while marking the newly added vertex as new to avoid infinity loops. Then we traverse through all the new edges of the mesh and flip them only if the XOR of the two vertices connecting the edge is true(i.e. v0 is new while v1 is not, or vice versa).
 			<br><br>
-			Finally, we traverse through all the vertices and update their positions with Vertex::newPosition to reflect the true, updated position of each vertex after all mesh editing operations are finished.</p>
+			Finally, we traverse through all the vertices and update their positions with <code>Vertex::newPosition</code> to reflect the true, updated position of each vertex after all mesh editing operations are finished.</p>
 <br>
 
 <div style="display: flex; flex-direction: column; align-items: center;">
@@ -245,9 +245,9 @@
 	</table>
 </div>
 
-			<p><i>- Take some notes, as well as some screenshots, of your observations on how meshes behave after loop subdivision. What happens to sharp corners and edges? Can you reduce this effect by pre-splitting some edges?</i></p>
-<p>Loop subdivision allows our meshes to have much smoother surfaces. Here are some screenshots of the cow mesh where we compare the before and after for subdivisions. We also see that sharp corners and edges "die" down as well as they are smoothened out. We can prevent such collapses of our sharp edges by pre-splitting edges. This works since by pre-splitting we are increased the number of edges, thus increasing the number of vertices to be used
-	as control points. This affects our averaging done during loop subdivision to reflect finer differences and, thus, preserving sharp features better.
+			<p><i>Take some notes, as well as some screenshots, of your observations on how meshes behave after loop subdivision. What happens to sharp corners and edges? Can you reduce this effect by pre-splitting some edges?</i></p>
+<p>Loop subdivision allows our meshes to have much smoother surfaces. Here are some screenshots of the cow mesh where we compare the before and after for subdivisions. We also see that sharp corners and edges "die" down as well as they are smoothened out. We can prevent such collapses of our sharp edges by pre-splitting edges. This works since pre-splitting increases the number of edges, thus increasing the number of vertices to be used
+	as control points. This affects our averaging done during loop subdivision to reflect finer differences and, thus, preserving sharp features at a better granularity.
 </p>
 
 <div style="display: flex; flex-direction: column; align-items: center;">
@@ -275,25 +275,41 @@
 	</table>
 </div>
 
-<p><i>- Can you pre-process the cube with edge flips and splits so that the cube subdivides symmetrically? Document these effects and explain why they occur. 
-	Also explain how your pre-processing helps alleviate the effects.</i></p>
-<p>The assymetric aspect arises during subsequent subdivisions because each face has only one diagonal edge going across. However, by splitting this edge on each face to result a total of 4 edges for each cube's face can help make the cube symmetric.
-	This is because with this pre-processing edge-split, each face of the cube now has exactly the same configuration.
+<p><i>Can you pre-process the cube with edge flips and splits so that the cube subdivides symmetrically? Document these effects and explain why they occur. Explain how your pre-processing helps alleviate the effects.</i></p>
+<p>The asymmetric aspect arises during subsequent subdivisions because each face has only one diagonal edge going across. However, by splitting this edge on each face of the cube (resulting in a total of 4 edges for each cube's face) can help make the cube symmetric.
+	This is because with this pre-processing edge-split, each face of the cube now has exactly the same configuration, and it makes the cube look much more symmetrical like a dice after loop subdivision rather than a lopsided lemon.
 </p>
 <br>
-		<h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<h2>Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
+		<p><i>Describe what you have done to enhance your mesh beyond the simple humanoid mesh described in the tutorial</i></p>
+		<p>We designed a Totoro mesh (from My Neighbor Totoro) in Blender and had to do more detailed extrusions and resizings in order to create his specially shaped legs, ears, arms, tail, and whiskers. For the whiskers, we first created them as Bezier curves with a diameter of 0.02m, then converted the Bezier curve to a mesh, reduced the number of faces on the mesh with a Decimate modifier in Blender, and then combined the whiskers mesh with the body mesh. We also ran into some issues when we first tried to model Totoro by using the mirror modifier in Blender to symmetrically design his features, but this caused the mesh to be non-manifold and unable to be rendered with our program, so we had to start designing Totoro from scratch and made sure to not rely on the mirror aspect. </p>
 
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="totoro1.png" width="400px"/>
+				  <figcaption>Totoro without loop sub-division</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="totoro2.png" width="400px"/>
+				  <figcaption>Totoro with 1 level of loop-subdivision</figcaption>
+				</td>
+			
+				<td style="text-align: center;">
+				  <img src="totoro3.png" width="400px"/>
+				  <figcaption>Totoro with 2 levels of loop-subdivision</figcaption>
+				</td>
+			</tr>
+			
+			</table>
+		</div>
+
+		<figure>
+			<img src="totoro.png" alt="Real Totoro" style="width:20%"/>
+			<figcaption>The true Totoro!</figcaption>
+		</figure>
+		
 		</div>
 	</body>
 </html>
