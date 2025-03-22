@@ -9,7 +9,7 @@
 
 			.container {
 				margin: 0 auto;
-				padding: 60px 20%;
+				padding: 60px 12%;
 			}
 
 			figure {
@@ -314,73 +314,76 @@ Next, for importance sampling we specifically target light sources for more effi
 			<br><br>
 
 		<p><i>For CBbunny.dae, render the mth bounce of light with max_ray_depth set to 0, 1, 2, 3, 4, and 5 (the -m flag), and isAccumBounces=false. Explain in your write-up what you see for the 2nd and 3rd bounce of light, and how it contributes to the quality of the rendered image compared to rasterization. Use 1024 samples per pixel.</i>
-			<table style="border-collapse: collapse; text-align: center;">
-				<!-- Top row: empty cell + column labels -->
-				<tr>
-					<th></th>
-					<th>m=0</th>
-					<th>m=1</th>
-					<th>m=2</th>
-					<th>m=3</th>
-					<th>m=4</th>
-					<th>m=5</th>
-				</tr>
+			<div style="overflow-x: auto;">
+				<table style="border-collapse: collapse; text-align: center; table-layout: auto; word-wrap: break-word; width: 100%;">
+					<!-- Top row: empty cell + column labels -->
+					<tr>
+						<th></th>
+						<th>m=0</th>
+						<th>m=1</th>
+						<th>m=2</th>
+						<th>m=3</th>
+						<th>m=4</th>
+						<th>m=5</th>
+					</tr>
 			
-				<!-- First image row -->
-				<tr>
-					<th>No Accumulation</th>
-					<td><img src="part4_q4_noaccum_m0.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q4_noaccum_m1.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q4_noaccum_m2.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q4_noaccum_m3.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q4_noaccum_m4.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q4_noaccum_m5.png" width="250px"/><figcaption></figcaption></td>
-				</tr>
+					<!-- First image row -->
+					<tr>
+						<th>No Accumulation</th>
+						<td><img src="part4_q4_noaccum_m0.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q4_noaccum_m1.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q4_noaccum_m2.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q4_noaccum_m3.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q4_noaccum_m4.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q4_noaccum_m5.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+					</tr>
 			
-				<!-- Second image row -->
-				<tr>
-					<th>Yes Accumulation</th>
-					<td><img src="part4_q4_yesaccum_m0.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q4_yesaccum_m1.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q4_yesaccum_m2.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q4_yesaccum_m3.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q4_yesaccum_m4.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q4_yesaccum_m5.png" width="250px"/><figcaption></figcaption></td>
-				</tr>
-			</table>
+					<!-- Second image row -->
+					<tr>
+						<th>Yes Accumulation</th>
+						<td><img src="part4_q4_yesaccum_m0.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q4_yesaccum_m1.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q4_yesaccum_m2.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q4_yesaccum_m3.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q4_yesaccum_m4.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q4_yesaccum_m5.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+					</tr>
+				</table>
+			</div>
 			
 			<br><br>
 
 		<p><i>For CBbunny.dae, output the Russian Roulette rendering with max_ray_depth set to 0, 1, 2, 3, 4, and 100(the -m flag). Use 1024 samples per pixel.</i>
-			<table style="border-collapse: collapse; text-align: center;">
-				<!-- Top row: empty cell + column labels -->
-				<tr>
-					<th></th>
-					<th>m=0</th>
-					<th>m=1</th>
-					<th>m=2</th>
-					<th>m=3</th>
-					<th>m=4</th>
-					<th>m=100</th>
-				</tr>
+			<div style="overflow-x: auto;">
+				<table style="border-collapse: collapse; text-align: center; table-layout: auto; word-wrap: break-word; width: 100%;">
+					<!-- Top row: empty cell + column labels -->
+					<tr>
+						<th></th>
+						<th>m=0</th>
+						<th>m=1</th>
+						<th>m=2</th>
+						<th>m=3</th>
+						<th>m=4</th>
+						<th>m=100</th>
+					</tr>
 			
-				<!-- First image row -->
-				<tr>
-					<th>Russian Roulette</th>
-					<td><img src="part4_q5_russian_m0 copy.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q5_russian_m1.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q5_russian_m2.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q5_russian_m3.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q5_russian_m4.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q5_russian_m100.png" width="250px"/><figcaption></figcaption></td>
-				</tr>
-			
-				
-			</table>
+					<!-- First image row -->
+					<tr>
+						<th>Russian Roulette</th>
+						<td><img src="part4_q5_russian_m0 copy.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q5_russian_m1.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q5_russian_m2.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q5_russian_m3.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q5_russian_m4.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+						<td><img src="part4_q5_russian_m100.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+					</tr>
+				</table>
+			</div>
 			<br><br>
 
 	  <p><i>Pick one scene and compare rendered views with various sample-per-pixel rates, including at least 1, 2, 4, 8, 16, 64, and 1024. Use 4 light rays.</i>
-			<table style="border-collapse: collapse; text-align: center;">
+		<div style="overflow-x: auto;">
+			<table style="border-collapse: collapse; text-align: center; table-layout: auto; word-wrap: break-word; width: 100%;">
 				<!-- Top row: empty cell + column labels -->
 				<tr>
 					<th></th>
@@ -392,21 +395,20 @@ Next, for importance sampling we specifically target light sources for more effi
 					<th>s=64</th>
 					<th>s=1024</th>
 				</tr>
-			
+		
 				<!-- First image row -->
 				<tr>
 					<th>Samples per-pixel rates (-l 4)</th>
-					<td><img src="part4_q6_samples_s1.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q6_samples_s2.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q6_samples_s4.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q6_samples_s8.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q6_samples_s16.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q6_samples_s64.png" width="250px"/><figcaption></figcaption></td>
-					<td><img src="part4_q6_samples_s1024.png" width="250px"/><figcaption></figcaption></td>
+					<td><img src="part4_q6_samples_s1.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+					<td><img src="part4_q6_samples_s2.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+					<td><img src="part4_q6_samples_s4.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+					<td><img src="part4_q6_samples_s8.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+					<td><img src="part4_q6_samples_s16.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+					<td><img src="part4_q6_samples_s64.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
+					<td><img src="part4_q6_samples_s1024.png" style="max-width: 100%; height: auto;" /><figcaption></figcaption></td>
 				</tr>
-			
-				
 			</table>
+		</div>
 			<br><br>
 		
 		
