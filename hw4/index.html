@@ -39,7 +39,7 @@
 		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/sp25-hw4-totoro-4">github.com/cal-cs184-student/sp25-hw4-totoro-4/</a>
 
 		<figure>
-			<img src="clothsim.png" alt="Cloth draped over sphere" style="width:70%"/>
+			<img src="sphere_drape.gif" alt="Cloth draped over sphere" style="width:20%"/>
 			<figcaption>The star cloth wireframe of this homework!</figcaption>
 		</figure>
 
@@ -51,7 +51,9 @@
 		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
 
 		<h2>Part 1: Masses and springs</h2>
-		We built out our grid of masses and springs to create our cloth wireframe    
+		We built out our grid of masses and springs to create our cloth wireframe. 
+
+		<br><br>
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
@@ -84,71 +86,176 @@
 		<br><br>
 
 		<i>Describe the effects of:</i>
-		<li><i>Changing the spring constant <code>ks</code>; how does the cloth behave from start to rest with a very low <code>ks</code>? A high <code>ks</code>?</i></li>
-		<li><i>What about for <code>density</code>?</i></li>
-		<li><i>What about for <code>damping</code>?</i></li>
-		<li><i>For each of the above, observe any noticeable differences in the cloth compared to the default parameters and show us some screenshots of those interesting differences and describe when they occur.</i></li>
+		<li><i>Changing the spring constant <code>ks</code>; how does the cloth behave from start to rest with a very low <code>ks</code>? A high <code>ks</code>?</i> When there's a very low <code>ks=500</code>, the cloth seems a lot more soft and flexible with a deeper drape and it has more motion as it's falling as well. When there's a very high <code>ks=50000</code>, the cloth seems extremely stiff and barely creases in on itself and has a very small drape as well. It just seems to be made of a much thicker material that doesn't fold as easily.  </li>
+
+		<br>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				<tr>
+					<th>ks = 500</th>
+					<th>ks = 500</th>
+					<th>ks = 50000</th>
+					<th>ks = 50000</th>
+				</tr>
+				<tr>
+					<td>
+						<img src="ks_500_mid.png" width="200px" alt="ks 500 mid"/>
+						<figcaption>Mid-fall</figcaption>
+					</td>
+					<td>
+						<img src="ks_500.png" width="200px" alt="ks 500"/>
+						<figcaption>Resting state</figcaption>
+					</td>
+					<td>
+						<img src="ks_50000_mid.png" width="200px" alt="ks 50000 mid"/>
+						<figcaption>Mid-fall</figcaption>
+					</td>
+					<td>
+						<img src="ks_50000.png" width="200px" alt="ks 50000"/>
+						<figcaption>Resting state</figcaption>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<li><i>What about for <code>density</code>?</i> TODO </li>
+		<li><i>What about for <code>damping</code>?</i> TODO </li>
+		<li><i>For each of the above, observe any noticeable differences in the cloth compared to the default parameters and show us some screenshots of those interesting differences and describe when they occur.</i> TODO </li>
 
 		<br><br>
 
 		<i>Show us a screenshot of your shaded cloth from scene/pinned4.json in its final resting state! If you choose to use different parameters than the default ones, please list them.</i>
+		<br><br>
+		<div style="text-align: center;">
+			<img src="resting_cloth.png" width="70%" alt="Pinned cloth resting state with default parameters"/>
+			<figcaption>Pinned cloth resting state with default parameters</figcaption>
+		</div>
 
 
 		<h2>Part 3: Handling collisions with other objects</h2>
 		<i>Describe your implementation of handling collisions with spheres and planes.</i>
+		<br><br>
+		For handling collisions with spheres, we code up the <code>Sphere:Collide</code> function to first calculate the distance between the given <code>PointMass</code> position and the sphere's center by subtracting the sphere's center from the <code>PointMass</code> position and taking the norm as the distance. If the computed distance is less than the sphere's radius, this indicates that the <code>PointMass</code> lies inside the sphere's radius. Since we only care about the <code>PointMass</code> that lie inside the sphere's radius, we then compute the tangent point on the surface of the sphere by adding the unit direction between the sphere and the <code>PointMass</code> scaled by the size of the radius.  Once we have this tangent point, we calculate the correction vector as the difference between this tangent point and the last position of the <code>PointMass</code>. We then apply this correction vector to the <code>PointMass</code> position by setting the position to be the last position plus the correction vector multiplied by <code>(1-friction)</code> to account for the friction of the collision, essentially bumping up the position of the <code>PointMass</code> up to the surface of the sphere. 
 
 		<br><br>
 
+		For handling collisions with planes, we code up the <code>Plane:Collide</code> function to check if the <code>PointMass</code> is below the plane's height by taking the difference between the <code>PointMass</code>'s position and the plane's given point, and checking if the dot product of this difference with the plane's normal is less than the <code>SURFACE_OFFSET</code>. If it's less than the offset, this indicates that the <code>PointMass</code> is below the plane's height and we need to adjust it. To do this correction, we compute the tangent point on the plane by subtracting the normal direction of the plane, scaled by the distance to the plane adjusted by the offset, from the <code>PointMass</code>'s position. Similar to the sphere collision, we calculate the correction vector as the difference between the tangent point and the <code>PointMass</code>'s last position. We then apply this correction vector to the <code>PointMass</code> position by setting the position to be the last position plus the correction vector multiplied by <code>(1-friction)</code> to account for friction of the collision.
+		<br><br>
+		
+		In addition, we also modify the <code>Cloth::Collide</code> code to iterate through all the <code>PointMass</code> object, and in each iteration, we iterate through every <code>CollisionObject</code> and check for collisions with the <code>PointMass</code> object.
+
 		<i>Show us screenshots of your shaded cloth from scene/sphere.json in its final resting state on the sphere using the default ks = 5000 as well as with ks = 500 and ks = 50000. Describe the differences in the results.</i>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				<tr>
+					<td>
+						<img src="sphere_500.png" width=90% alt="Sphere ks 500"/>
+						<figcaption>ks = 500</figcaption>
+					</td>
+					<td>
+						<img src="sphere_5000.png" width=90% alt="Sphere ks 5000"/>
+						<figcaption>ks = 5000</figcaption>
+					</td>
+					<td>
+						<img src="sphere_50000.png" width=90% alt="Sphere ks 50000"/>
+						<figcaption>ks = 50000</figcaption>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<br>
+		As the ks increases, the cloth seems to be much more stiff and rigid and less likely to drape softly over the sphere. The cloth with <code>ks = 500</code> is much more flexible and drapes over the sphere more naturally and molds over the sphere, while the cloth with <code>ks = 50000</code> is very stiff and doesn't mold to the sphere's shape as much and appears to extrude out more. 
 
 		<br><br>
 
 		<i>Show us a screenshot of your shaded cloth lying peacefully at rest on the plane.</i>
 
 
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				<tr>
+					<td>
+						<img src="plane.png" width=80% alt="Sphere ks 500"/>
+						<figcaption>Cloth at rest on plane</figcaption>
+					</td>
+					<td>
+						<img src="plane_wire.png" width=80% alt="Sphere ks 5000"/>
+						<figcaption>Zoom of cloth wireframe at rest on plane</figcaption>
+					</td>
+				</tr>
+			</table>
+		</div>
+
 		<h2>Part 4: Handling self-collisions</h2>
 		<i>Describe your implementation of handling self-collisions.</i>
+		<br><br>
+		To handle self-collision, we first write a helper function <code>Cloth::hash_position</code> which hashes a given 3D position into a unique float based on membership in a grid. ADD MORE HERE
+
+		<br><br>
+
+		Next, we wrote a function to actually build a spatial map out of all the point masses by iterating through each point mass, computing the hash based on the point mass position, checking if the hash is already in the spatial map, and if not, adding it to the spatial map.
+		<br><br>
+
+		Then, we wrote the <code>Cloth::self_collide</code> function to iterate through all the point masses and check for collisions with other point masses in the same spatial map cell. We first calculate the hash of that position and check if there are any other point masses in the same cell. ADD MORE HERE
+
+		<br><br>
+		Lastly, we modified the <code>PointMass::Collide</code> function to check for self-collisions by building the spatial map, and then iterating through the all of the point masses and calling <code>self_collide</code> to check for self collision. 
 
 		<br><br>
 		<i>Show us at least 3 screenshots that document how your cloth falls and folds on itself, starting with an early, initial self-collision and ending with the cloth at a more restful state (even if it is still slightly bouncy on the ground).</i>
+		<br><br>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				<tr>
+					<td style="width: 25%; padding-right: 10px;">
+						<img src="self_1.png" width="100%" alt="Initial Self-Collision" style="object-fit: cover; height: 200px;"/>
+						<figcaption>Initial Self-Collision</figcaption>
+					</td>
+					<td style="width: 25%; padding-right: 10px;">
+						<img src="self_2.png" width="100%" alt="Intermediate State" style="object-fit: cover; height: 200px;"/>
+						<figcaption>Intermediate State</figcaption>
+					</td>
+					<td style="width: 25%; padding-right: 10px;">
+						<img src="self_3.png" width="100%" alt="Further Folding" style="object-fit: cover; height: 200px;"/>
+						<figcaption>Further Folding</figcaption>
+					</td>
+					<td style="width: 25%;">
+						<img src="self_4.png" width="100%" alt="Resting State" style="object-fit: cover; height: 200px;"/>
+						<figcaption>Resting State</figcaption>
+					</td>
+				</tr>
+			</table>
+		</div>
 
 		<br><br>
-		<i>Vary the density as well as ks and describe with words and screenshots how they affect the behavior of the cloth as it falls on itself.</i>
+		<i>Vary the density as well as ks and describe with words and screenshots how they affect the behavior of the cloth as it falls on itself.</i> TODO
 
 
 		<h2>Part 5: Shaders</h2>
-		<i>Explain in your own words what is a shader program and how vertex and fragment shaders work together to create lighting and material effects.</i>
+		<i>Explain in your own words what is a shader program and how vertex and fragment shaders work together to create lighting and material effects.</i> TODO
 
 		<br><br>
 
-		<i>Explain the Blinn-Phong shading model in your own words. Show a screenshot of your Blinn-Phong shader outputting only the ambient component, a screen shot only outputting the diffuse component, a screen shot only outputting the specular component, and one using the entire Blinn-Phong model.</i>
+		<i>Explain the Blinn-Phong shading model in your own words. Show a screenshot of your Blinn-Phong shader outputting only the ambient component, a screen shot only outputting the diffuse component, a screen shot only outputting the specular component, and one using the entire Blinn-Phong model.</i> TODO
 
 		<br><br>
 
-		<i>Show a screenshot of your texture mapping shader using your own custom texture by modifying the textures in /textures/.</i>
+		<i>Show a screenshot of your texture mapping shader using your own custom texture by modifying the textures in /textures/.</i> TODO
 
 		<br><br>
-		<i>Show a screenshot of bump mapping on the cloth and on the sphere. Show a screenshot of displacement mapping on the sphere. Use the same texture for both renders. You can either provide your own texture or use one of the ones in the textures directory, BUT choose one that’s not the default texture_2.png. Compare the two approaches and resulting renders in your own words. Compare how your the two shaders react to the sphere by changing the sphere mesh’s coarseness by using -o 16 -a 16 and then -o 128 -a 128.</i>
+		<i>Show a screenshot of bump mapping on the cloth and on the sphere. Show a screenshot of displacement mapping on the sphere. Use the same texture for both renders. You can either provide your own texture or use one of the ones in the textures directory, BUT choose one that’s not the default texture_2.png. Compare the two approaches and resulting renders in your own words. Compare how your the two shaders react to the sphere by changing the sphere mesh’s coarseness by using -o 16 -a 16 and then -o 128 -a 128.</i> TODO
 
 		<br><br>
-		<i>Show a screenshot of your mirror shader on the cloth and on the sphere.</i>
+		<i>Show a screenshot of your mirror shader on the cloth and on the sphere.</i> TODO
 
 		<br><br>
-		<i>Explain what you did in your custom shader, if you made one.</i>
+		<i>Explain what you did in your custom shader, if you made one.</i> 
 
 		<h2>(Optional) Part 6: Extra Credit - Additional cloth simulation features!</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		TODO
 		
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
 		</div>
 	</body>
 </html>
