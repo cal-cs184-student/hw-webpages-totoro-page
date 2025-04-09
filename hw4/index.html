@@ -483,53 +483,45 @@ the surface is, such as a metallic surface. And together, all-combined, we get t
 		<br><br>
 		<i>Show a screenshot of bump mapping on the cloth and on the sphere. Show a screenshot of displacement mapping on the sphere. Use the same texture for both renders. You can either provide your own texture or use one of the ones in the textures directory, BUT choose one that’s not the default texture_2.png. Compare the two approaches and resulting renders in your own words. Compare how your the two shaders react to the sphere by changing the sphere mesh’s coarseness by using -o 16 -a 16 and then -o 128 -a 128.</i>
 <br><br>
+Below is a table displaying the changes in appearance of the sphere when using Displacement or Bump Mapping. With increased mesh coarseness, we
+see a noticeable difference in Displacement mapping whereas there is not noticeable difference for Bump mapping. Specifically, the outskirts of the sphere are shown
+as more rough when we increase the mesh coarseness for Displacement mapping(lower-left).
+<br><br>
+The reason behind this is that Bump mapping only gives us the illusion of detail on an object by only modifying it normal vectors. However, in displacement mapping we are modifying the position of the vertices
+along with the normals. This change allows Displacement mapping to closely reflect the true details of a given texture especially when we get to work with coarser meshes(e.g. -o 128 -a 128). 
+
 <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
   <table style="border-collapse: collapse; text-align: center;">
     <tr>
       <th></th>
-      <th colspan="2" style="padding: 10px; font-size: 16px;">Displacement</th>
-      <th colspan="2" style="padding: 10px; font-size: 16px;">Bump</th>
+      <th style="padding: 10px; font-size: 16px;">Displacement</th>
+      <th style="padding: 10px; font-size: 16px;">Bump</th>
     </tr>
     <tr>
       <td style="font-weight: bold;">-o 16 -a 16</td>
       <td>
-        <img src="displace_before_o16_a16.png" width="200px" alt="Displacement A1"/><br>
+        <img src="dis_o16.png" width="400px" alt="Displacement A"/><br>
         <figcaption>Displacement (16)</figcaption>
       </td>
       <td>
-        <img src="displace_after_o16_a16.png" width="200px" alt="Displacement A2"/><br>
-        <figcaption>Displacement (16)</figcaption>
-      </td>
-      <td>
-        <img src="bump_before_o16_a16.png" width="200px" alt="Bump A1"/><br>
-        <figcaption>Bump (16)</figcaption>
-      </td>
-      <td>
-        <img src="bump_after_o16_a16.png" width="200px" alt="Bump A2"/><br>
+        <img src="bump_o16.png" width="400px" alt="Bump A"/><br>
         <figcaption>Bump (16)</figcaption>
       </td>
     </tr>
     <tr>
       <td style="font-weight: bold;">-o 128 -a 128</td>
       <td>
-        <img src="displace_before_o128_a128.png" width="200px" alt="Displacement B1"/><br>
+        <img src="dis_o128.png" width="400px" alt="Displacement B"/><br>
         <figcaption>Displacement (128)</figcaption>
       </td>
       <td>
-        <img src="displace_after_o128_a128.png" width="200px" alt="Displacement B2"/><br>
-        <figcaption>Displacement (128)</figcaption>
-      </td>
-      <td>
-        <img src="bump_before_o128_a128.png" width="200px" alt="Bump B1"/><br>
-        <figcaption>Bump (128)</figcaption>
-      </td>
-      <td>
-        <img src="bump_after_o128_a128.png" width="200px" alt="Bump B2"/><br>
+        <img src="bump_o128.png" width="400px" alt="Bump B"/><br>
         <figcaption>Bump (128)</figcaption>
       </td>
     </tr>
   </table>
 </div>
+
 
 		<br><br>
 		<i>Show a screenshot of your mirror shader on the cloth and on the sphere.</i> 
