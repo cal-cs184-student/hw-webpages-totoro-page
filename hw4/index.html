@@ -455,24 +455,28 @@ interfere too much with diffuse light and specular light. Next, diffuse light is
 and light direction. This means that diffuse light is strongest when the light source is directly facing the surface. Finally, the specular light component is responsible for determining how "shiny"
 the surface is, such as a metallic surface. And together, all-combined, we get the final Blinn-Phong shading model.
 <br>
-<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
-  <div style="text-align: center;">
-    <img src="phong_ambient_only.png" width="400px" alt="Image 1"/>
-    <figcaption>Only Ambient</figcaption>
-  </div>
-  <div style="text-align: center;">
-    <img src="phong_diffuse_only.png" width="400px" alt="Image 2"/>
-    <figcaption>Only Diffuse</figcaption>
-  </div>
-  <div style="text-align: center;">
-    <img src="phong_specular_only.png" width="400px" alt="Image 3"/>
-    <figcaption>Only Specular</figcaption>
-  </div>
-  <div style="text-align: center;">
-    <img src="phong_total.png" width="400px" alt="Image 4"/>
-    <figcaption>All Combined</figcaption>
-  </div>
-</div>
+<table style="width: 100%; text-align: center; border-collapse: collapse; margin-top: 20px;">
+	<tr>
+		<td>
+			<img src="phong_ambient_only.png" width="400px" alt="Ambient Only"/>
+			<figcaption>Only Ambient</figcaption>
+		</td>
+		<td>
+			<img src="phong_diffuse_only.png" width="400px" alt="Diffuse Only"/>
+			<figcaption>Only Diffuse</figcaption>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<img src="phong_specular_only.png" width="400px" alt="Specular Only"/>
+			<figcaption>Only Specular</figcaption>
+		</td>
+		<td>
+			<img src="phong_total.png" width="400px" alt="All Combined"/>
+			<figcaption>All Combined</figcaption>
+		</td>
+	</tr>
+</table>
 
 		<br><br>
 
@@ -533,16 +537,20 @@ along with the normals. This change allows Displacement mapping to closely refle
 		<br><br>
 		<i>Show a screenshot of your mirror shader on the cloth and on the sphere.</i> 
 <br><br>
-<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
-  <div style="text-align: center;">
-    <img src="mirror_before.png" width="400px" alt="Image 1"/>
-    <figcaption>Sphere Only</figcaption>
-  </div>
-  <div style="text-align: center;">
-    <img src="mirror_after.png" width="390px" alt="Image 2"/>
-    <figcaption>Cloth on Sphere</figcaption>
-  </div>
-</div>
+<table style="width: 100%; text-align: center; border-collapse: collapse; margin-top: 20px;">
+	<tr>
+		<th>Sphere Only</th>
+		<th>Cloth on Sphere</th>
+	</tr>
+	<tr>
+		<td>
+			<img src="mirror_before.png" width="400px" alt="Sphere Only"/>
+		</td>
+		<td>
+			<img src="mirror_after.png" width="390px" alt="Cloth on Sphere"/>
+		</td>
+	</tr>
+</table>
 		<!-- <br><br>
 		<i>Explain what you did in your custom shader, if you made one.</i> 
 
