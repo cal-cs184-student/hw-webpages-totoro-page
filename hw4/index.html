@@ -491,43 +491,42 @@ the surface is, such as a metallic surface. And together, all-combined, we get t
 		<br><br>
 		<i>Show a screenshot of bump mapping on the cloth and on the sphere. Show a screenshot of displacement mapping on the sphere. Use the same texture for both renders. You can either provide your own texture or use one of the ones in the textures directory, BUT choose one that’s not the default texture_2.png. Compare the two approaches and resulting renders in your own words. Compare how your the two shaders react to the sphere by changing the sphere mesh’s coarseness by using -o 16 -a 16 and then -o 128 -a 128.</i>
 <br><br>
-Below is a table displaying the changes in appearance of the sphere when using Displacement or Bump Mapping. With increased mesh coarseness, we
-see a noticeable difference in Displacement mapping whereas there is not noticeable difference for Bump mapping. Specifically, the outskirts of the sphere are shown
-as more rough when we increase the mesh coarseness for Displacement mapping(lower-left).
+Below is a table displaying the changes in appearance of the sphere when using Displacement or Bump Mapping. For bump mapping, we used a normal of <code>2</code> and a height of <code>1</code>. For displacement, we used a normal of <code>100</code> and a height of <code>0.02</code>. <br><br>
+With increased mesh coarseness, we see a noticeable difference in Displacement mapping whereas there is not noticeable difference for Bump mapping. Specifically, the outskirts of the sphere are shown as more rough when we increase the mesh coarseness for Displacement mapping(lower-left).
 <br><br>
 The reason behind this is that Bump mapping only gives us the illusion of detail on an object by only modifying it normal vectors. However, in displacement mapping we are modifying the position of the vertices
 along with the normals. This change allows Displacement mapping to closely reflect the true details of a given texture especially when we get to work with coarser meshes(e.g. -o 128 -a 128). 
 
 <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
-  <table style="border-collapse: collapse; text-align: center;">
-    <tr>
-      <th></th>
-      <th style="padding: 10px; font-size: 16px;">Displacement</th>
-      <th style="padding: 10px; font-size: 16px;">Bump</th>
-    </tr>
-    <tr>
-      <td style="font-weight: bold;">-o 16 -a 16</td>
-      <td>
-        <img src="dis_o16.png" width="400px" alt="Displacement A"/><br>
-        <figcaption>Displacement (16)</figcaption>
-      </td>
-      <td>
-        <img src="bump_o16.png" width="400px" alt="Bump A"/><br>
-        <figcaption>Bump (16)</figcaption>
-      </td>
-    </tr>
-    <tr>
-      <td style="font-weight: bold;">-o 128 -a 128</td>
-      <td>
-        <img src="dis_o128.png" width="400px" alt="Displacement B"/><br>
-        <figcaption>Displacement (128)</figcaption>
-      </td>
-      <td>
-        <img src="bump_o128.png" width="400px" alt="Bump B"/><br>
-        <figcaption>Bump (128)</figcaption>
-      </td>
-    </tr>
-  </table>
+	<table style="border-collapse: separate; border-spacing: 15px; text-align: center; width: 100%;">
+		<tr>
+			<th></th>
+			<th style="padding: 10px; font-size: 16px; width: 45%;">Displacement</th>
+			<th style="padding: 10px; font-size: 16px; width: 45%;">Bump</th>
+		</tr>
+		<tr>
+			<td style="font-weight: bold; padding: 0px;">-o 16 -a 16</td>
+			<td style="padding: 10px;">
+				<img src="dis_o16.png" width="90%" alt="Displacement A"/><br>
+				<figcaption>Displacement (16)</figcaption>
+			</td>
+			<td style="padding: 10px;">
+				<img src="bump_o16.png" width="90%" alt="Bump A"/><br>
+				<figcaption>Bump (16)</figcaption>
+			</td>
+		</tr>
+		<tr>
+			<td style="font-weight: bold; padding: 0px;">-o 128 -a 128</td>
+			<td style="padding: 10px;">
+				<img src="dis_o128.png" width="90%" alt="Displacement B"/><br>
+				<figcaption>Displacement (128)</figcaption>
+			</td>
+			<td style="padding: 10px;">
+				<img src="bump_o128.png" width="90%" alt="Bump B"/><br>
+				<figcaption>Bump (128)</figcaption>
+			</td>
+		</tr>
+	</table>
 </div>
 
 
@@ -540,15 +539,15 @@ along with the normals. This change allows Displacement mapping to closely refle
     <figcaption>Sphere Only</figcaption>
   </div>
   <div style="text-align: center;">
-    <img src="mirror_after.png" width="400px" alt="Image 2"/>
+    <img src="mirror_after.png" width="390px" alt="Image 2"/>
     <figcaption>Cloth on Sphere</figcaption>
   </div>
 </div>
-		<br><br>
+		<!-- <br><br>
 		<i>Explain what you did in your custom shader, if you made one.</i> 
 
 		<h2>(Optional) Part 6: Extra Credit - Additional cloth simulation features!</h2>
-		TODO
+		TODO -->
 		
 		</div>
 	</body>
