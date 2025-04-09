@@ -86,7 +86,7 @@
 		<br><br>
 
 		<i>Describe the effects of:</i>
-		<li><i>Changing the spring constant <code>ks</code>; how does the cloth behave from start to rest with a very low <code>ks</code>? A high <code>ks</code>?</i> When there's a very low <code>ks=500</code>, the cloth seems a lot more soft and flexible with a deeper drape and it has more motion as it's falling as well. When there's a very high <code>ks=50000</code>, the cloth seems extremely stiff and barely creases in on itself and has a very small drape as well. It just seems to be made of a much thicker material that doesn't fold as easily.  </li>
+		<li><i>Changing the spring constant <code>ks</code>; how does the cloth behave from start to rest with a very low <code>ks</code>? A high <code>ks</code>?</i> <br><br>When there's a very low <code>ks=500</code>, the cloth seems a lot more soft and flexible with a deeper drape and it has more motion as it's falling as well. When there's a very high <code>ks=50000</code>, the cloth seems extremely stiff and barely creases in on itself and has a very small drape as well. It just seems to be made of a much thicker material that doesn't fold as easily.  </li>
 
 		<br>
 		<div style="display: flex; flex-direction: column; align-items: center;">
@@ -117,10 +117,134 @@
 				</tr>
 			</table>
 		</div>
-
-		<li><i>What about for <code>density</code>?</i> TODO </li>
-		<li><i>What about for <code>damping</code>?</i> TODO </li>
-		<li><i>For each of the above, observe any noticeable differences in the cloth compared to the default parameters and show us some screenshots of those interesting differences and describe when they occur.</i> TODO </li>
+<br><br>
+		<li><i>What about for <code>density</code>?</i> 
+			<br><br>
+			When the density is low(density=1), the cloth gives the impression that its light-weight as it's seen be being less droopy in its resting state.
+			However, when the density is set to a high value(density=10,000), the cloth feels heavy as it can be seen with a large droop in its final resting state.
+			<br>
+			<br></li>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				<tr>
+					<th>density = 1</th>
+					<th>density = 1</th>
+					<th>density = 10,000</th>
+					<th>density = 10,000</th>
+				</tr>
+				<tr>
+					<td>
+						<img src="density=1_init.png" width="200px" alt="density 1 mid"/>
+						<figcaption>Mid-fall</figcaption>
+					</td>
+					<td>
+						<img src="density=1_final.png" width="200px" alt="density 1 final"/>
+						<figcaption>Resting state</figcaption>
+					</td>
+					<td>
+						<img src="density=10000_init.png" width="200px" alt="density 10000 mid"/>
+						<figcaption>Mid-fall</figcaption>
+					</td>
+					<td>
+						<img src="density=10000_final.png" width="200px" alt="density 10000 final"/>
+						<figcaption>Resting state</figcaption>
+					</td>
+				</tr>
+			</table>
+		</div>
+<br><br>
+		<li><i>What about for <code>damping</code>?</i>
+		<br><br> When the damping percentage is low(0.10), the cloth drops quickly with little resistance, but when 
+		the damping percentage is high(0.90), the cloth falls slowly and gradually.
+		<br><br>
+	</li>
+	<div style="display: flex; flex-direction: column; align-items: center;">
+		<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			<tr>
+				<th>damping = 0.10</th>
+				<th>damping = 0.10</th>
+				<th>damping = 0.90</th>
+				<th>damping = 0.90</th>
+			</tr>
+			<tr>
+				<td>
+					<img src="damping=0.10_init.png" width="200px" alt="damping .10 mid"/>
+					<figcaption>Mid-fall</figcaption>
+				</td>
+				<td>
+					<img src="damping=0.10_final.png" width="200px" alt="damping .10 final"/>
+					<figcaption>Resting state</figcaption>
+				</td>
+				<td>
+					<img src="damping=0.90_init.png" width="200px" alt="damping .90 mid"/>
+					<figcaption>Mid-fall</figcaption>
+				</td>
+				<td>
+					<img src="damping=0.90_final.png" width="200px" alt="damping .90 final"/>
+					<figcaption>Resting state</figcaption>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+		
+		<li><i>For each of the above, observe any noticeable differences in the cloth compared to the default parameters and show us some screenshots of those interesting differences and describe when they occur.</i></li>
+		<ul>1. Spring Constant(ks)</ul>
+		Compared to the default state, there's a noticeable difference when theres a very high spring constant. For example, below is a comparison between default(ks=5,000) and a high spring constant(ks=50,000).
+		We can see that the cloth looks noticeably more stiff with a high spring constant. 
+		<br><br>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				<tr>
+					<td>
+						<img src="resting_cloth.png" width="200px" alt="damping .10 mid"/>
+						<figcaption>ks = 5,000 (default)</figcaption>
+					</td>
+					<td>
+						<img src="ks_50000.png" width="200px" alt="damping .10 final"/>
+						<figcaption>ks = 50,000</figcaption>
+					</td>
+				</tr>
+			</table>
+		</div>
+<br>
+<ul>2. Density</ul>
+For density, we can see a noticeable difference in the perceived weight of a cloth when density is high. 
+Compared to the default value of density of 15, when there's a density of 10,000 the final resting state of the cloth looks heavy. 
+<br><br>
+<div style="display: flex; flex-direction: column; align-items: center;">
+	<table style="width: 100%; text-align: center; border-collapse: collapse;">
+		<tr>
+			<td>
+				<img src="resting_cloth.png" width="200px" alt="damping .10 mid"/>
+				<figcaption>density = 15 (default)</figcaption>
+			</td>
+			<td>
+				<img src="density=10000_final.png" width="200px" alt="damping .10 final"/>
+				<figcaption>density = 10,000</figcaption>
+			</td>
+		</tr>
+	</table>
+</div>
+<br>
+<ul>3. Damping</ul>
+The visual differences between final states of different damping values are hard to tell, but the difference lies in
+how fast the cloth reaches the final resting state. The higher damping percentage is, the longer it takes for it to reach its resting state. 
+<br><br>
+<div style="display: flex; flex-direction: column; align-items: center;">
+	<table style="width: 100%; text-align: center; border-collapse: collapse;">
+		<tr>
+			<td>
+				<img src="resting_cloth.png" width="200px" alt="damping .10 mid"/>
+				<figcaption>damping = 0.20 (default)</figcaption>
+			</td>
+			<td>
+				<img src="damping=0.90_final.png" width="200px" alt="damping .10 final"/>
+				<figcaption>damping = 0.90</figcaption>
+			</td>
+		</tr>
+	</table>
+</div>
 
 		<br><br>
 
@@ -230,26 +354,196 @@
 		</div>
 
 		<br><br>
-		<i>Vary the density as well as ks and describe with words and screenshots how they affect the behavior of the cloth as it falls on itself.</i> TODO
+		<i>Vary the density as well as ks and describe with words and screenshots how they affect the behavior of the cloth as it falls on itself.</i>
+<br><br>
+On a high level, density controls how fast the cloth falls along with how many small creases there are. A more dense cloth will fall faster and will yield a higher number
+of smaller folds(i.e. higher tendency of self collisions). Meanwhile, ks will control how stiff the cloth is to folding. A higher ks value will result the cloth
+resisting to having many folds.
+<br><br>
+Below is a chart of varying density and ks. We can see that a low density and low ks(lower-left) results in a light-weight cloth that folds well. But if we 
+increase the ks value to 9,000(upper-left), we can see the cloth is "resisting" folds, hence resulting in only a few large folds.
+On the other side of the spectrum we can see that a high density and high ks(upper-right), will result in a cloth that is heavy(i.e. falling fast) and more rigid.
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+	<table style="border-collapse: collapse; text-align: center;">
+		<tr>
+			<td rowspan="4" style="writing-mode: vertical-rl; transform: rotate(180deg); padding: 10px; font-weight: bold;">Increasing ks →</td>
+			<td></td>
+			<td style="padding: 5px; font-weight: bold;">density = 1</td>
+			<td style="padding: 5px; font-weight: bold;">density = 15</td>
+			<td style="padding: 5px; font-weight: bold;">density = 50</td>
+		</tr>
+		<tr>
+			<td style="font-weight: bold;">ks = 9,000</td>
+			<td>
+				<img src="d1_ks9000.png" width="200px"/>
+				<figcaption>density=1, ks=9,000</figcaption>
+			</td>
+			<td>
+				<img src="d15_ks9000.png" width="200px"/>
+				<figcaption>density=15, ks=9,000</figcaption>
+			</td>
+			<td>
+				<img src="d50_ks9000.png" width="200px"/>
+				<figcaption>density=50, ks=9,000</figcaption>
+			</td>
+		</tr>
+		<tr>
+			<td style="font-weight: bold;">ks = 5,000</td>
+			<td>
+				<img src="d1_ks5000.png" width="200px" alt="density 0.1 ks 500"/>
+				<figcaption>density=1, ks=5,000</figcaption>
+			</td>
+			<td>
+				<img src="d15_ks5000.png" width="200px" alt="density 0.5 ks 500"/>
+				<figcaption>density=15, ks=5,000</figcaption>
+			</td>
+			<td>
+				<img src="d50_ks5000.png" width="200px" alt="density 1.0 ks 500"/>
+				<figcaption>density=50, ks=5,000</figcaption>
+			</td>
+		</tr>
+		<tr>
+			<td style="font-weight: bold;">ks = 1,000</td>
+			<td>
+				<img src="d1_ks1000.png" width="200px" alt="density 0.1 ks 1000"/>
+				<figcaption>density=1, ks=1,000</figcaption>
+			</td>
+			<td>
+				<img src="d15_ks1000.png" width="200px" alt="density 0.5 ks 1000"/>
+				<figcaption>density=15, ks=1,000</figcaption>
+			</td>
+			<td>
+				<img src="d50_ks1000.png" width="200px" alt="density 1.0 ks 1000"/>
+				<figcaption>density=50, ks=1,000</figcaption>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td colspan="3" style="padding: 10px; font-weight: bold;">Increasing density -></td>
+		</tr>
+	</table>
+</div>
+
 
 
 		<h2>Part 5: Shaders</h2>
-		<i>Explain in your own words what is a shader program and how vertex and fragment shaders work together to create lighting and material effects.</i> TODO
+		<i>Explain in your own words what is a shader program and how vertex and fragment shaders work together to create lighting and material effects.</i>
+<br><br>
+A shader program is a specialized program made to run on the GPU in parallel. The main purpose is to compute how geometry is rendered on the screen quickly.
+There are two parts to a shader--the vertex shader and fragment shader. The vertex shader transforms the 3D positions of each vertex on the mesh from model space
+into screen space using transformation matrices. It also passes information like normals or positions as output. The outputs of the vertex shader are used as
+inputs to the fragment shader where it runs for each pixel that is part of the final rendered triangle. It is reponsible for getting the right
+lighting, color, and texture, which is why its result is "out_color" that determines the final color on our screen.
 
 		<br><br>
 
-		<i>Explain the Blinn-Phong shading model in your own words. Show a screenshot of your Blinn-Phong shader outputting only the ambient component, a screen shot only outputting the diffuse component, a screen shot only outputting the specular component, and one using the entire Blinn-Phong model.</i> TODO
+		<i>Explain the Blinn-Phong shading model in your own words. Show a screenshot of your Blinn-Phong shader outputting only the ambient component, a screen shot only outputting the diffuse component, a screen shot only outputting the specular component, and one using the entire Blinn-Phong model.</i>
+<br><br>
+The Blinn-Phong shading model combines ambient light component, diffuse light component, and specular light component to get the final light or color value. The ambient light can be seen
+as the default level of light there is and is set to a small constant value. We used a ambient light value of 0.1 to ensure that it's not zero, but very small so that it does not
+interfere too much with diffuse light and specular light. Next, diffuse light is essentially how much light hits the surface since it's the dot product between the normal vector to the surface
+and light direction. This means that diffuse light is strongest when the light source is directly facing the surface. Finally, the specular light component is responsible for determining how "shiny"
+the surface is, such as a metallic surface. And together, all-combined, we get the final Blinn-Phong shading model.
+<br>
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+  <div style="text-align: center;">
+    <img src="phong_ambient_only.png" width="400px" alt="Image 1"/>
+    <figcaption>Only Ambient</figcaption>
+  </div>
+  <div style="text-align: center;">
+    <img src="phong_diffuse_only.png" width="400px" alt="Image 2"/>
+    <figcaption>Only Diffuse</figcaption>
+  </div>
+  <div style="text-align: center;">
+    <img src="phong_specular_only.png" width="400px" alt="Image 3"/>
+    <figcaption>Only Specular</figcaption>
+  </div>
+  <div style="text-align: center;">
+    <img src="phong_total.png" width="400px" alt="Image 4"/>
+    <figcaption>All Combined</figcaption>
+  </div>
+</div>
 
 		<br><br>
 
-		<i>Show a screenshot of your texture mapping shader using your own custom texture by modifying the textures in /textures/.</i> TODO
+		<i>Show a screenshot of your texture mapping shader using your own custom texture by modifying the textures in /textures/.</i>
+<br><br>
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+  <div style="text-align: center;">
+    <img src="custom_texture_me.png" width="400px" alt="Image 1"/>
+    <figcaption>Custom Texture Sphere</figcaption>
+  </div>
+  <div style="text-align: center;">
+    <img src="custom_texture_me_after.png" width="400px" alt="Image 2"/>
+    <figcaption>Custom Texture After</figcaption>
+  </div>
+</div>
+		<br><br>
+		<i>Show a screenshot of bump mapping on the cloth and on the sphere. Show a screenshot of displacement mapping on the sphere. Use the same texture for both renders. You can either provide your own texture or use one of the ones in the textures directory, BUT choose one that’s not the default texture_2.png. Compare the two approaches and resulting renders in your own words. Compare how your the two shaders react to the sphere by changing the sphere mesh’s coarseness by using -o 16 -a 16 and then -o 128 -a 128.</i>
+<br><br>
+<div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+  <table style="border-collapse: collapse; text-align: center;">
+    <tr>
+      <th></th>
+      <th colspan="2" style="padding: 10px; font-size: 16px;">Displacement</th>
+      <th colspan="2" style="padding: 10px; font-size: 16px;">Bump</th>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">-o 16 -a 16</td>
+      <td>
+        <img src="displace_before_o16_a16.png" width="200px" alt="Displacement A1"/><br>
+        <figcaption>Displacement (16)</figcaption>
+      </td>
+      <td>
+        <img src="displace_after_o16_a16.png" width="200px" alt="Displacement A2"/><br>
+        <figcaption>Displacement (16)</figcaption>
+      </td>
+      <td>
+        <img src="bump_before_o16_a16.png" width="200px" alt="Bump A1"/><br>
+        <figcaption>Bump (16)</figcaption>
+      </td>
+      <td>
+        <img src="bump_after_o16_a16.png" width="200px" alt="Bump A2"/><br>
+        <figcaption>Bump (16)</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">-o 128 -a 128</td>
+      <td>
+        <img src="displace_before_o128_a128.png" width="200px" alt="Displacement B1"/><br>
+        <figcaption>Displacement (128)</figcaption>
+      </td>
+      <td>
+        <img src="displace_after_o128_a128.png" width="200px" alt="Displacement B2"/><br>
+        <figcaption>Displacement (128)</figcaption>
+      </td>
+      <td>
+        <img src="bump_before_o128_a128.png" width="200px" alt="Bump B1"/><br>
+        <figcaption>Bump (128)</figcaption>
+      </td>
+      <td>
+        <img src="bump_after_o128_a128.png" width="200px" alt="Bump B2"/><br>
+        <figcaption>Bump (128)</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
 
 		<br><br>
-		<i>Show a screenshot of bump mapping on the cloth and on the sphere. Show a screenshot of displacement mapping on the sphere. Use the same texture for both renders. You can either provide your own texture or use one of the ones in the textures directory, BUT choose one that’s not the default texture_2.png. Compare the two approaches and resulting renders in your own words. Compare how your the two shaders react to the sphere by changing the sphere mesh’s coarseness by using -o 16 -a 16 and then -o 128 -a 128.</i> TODO
-
-		<br><br>
-		<i>Show a screenshot of your mirror shader on the cloth and on the sphere.</i> TODO
-
+		<i>Show a screenshot of your mirror shader on the cloth and on the sphere.</i> 
+<br><br>
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+  <div style="text-align: center;">
+    <img src="mirror_before.png" width="400px" alt="Image 1"/>
+    <figcaption>Sphere Only</figcaption>
+  </div>
+  <div style="text-align: center;">
+    <img src="mirror_after.png" width="400px" alt="Image 2"/>
+    <figcaption>Cloth on Sphere</figcaption>
+  </div>
+</div>
 		<br><br>
 		<i>Explain what you did in your custom shader, if you made one.</i> 
 
