@@ -39,8 +39,8 @@
 		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/sp25-hw4-totoro-4">github.com/cal-cs184-student/sp25-hw4-totoro-4/</a>
 
 		<figure>
-			<img src="sphere_drape.gif" alt="Cloth draped over sphere" style="width:20%"/>
-			<figcaption>The star cloth wireframe of this homework!</figcaption>
+			<img src="sphere_drape_fast.gif" alt="Cloth draped over sphere" style="width: 25%"/>
+			<figcaption>The star cloth and sphere of this homework!</figcaption>
 		</figure>
 
 		<!--
@@ -48,7 +48,18 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+
+		In this homework, we explored how to develop a cloth model for simulation from the ground up. This involved figuring out how to represent the cloth itself and how to simulate its motion and behavior under physical parameters. We also explored how to handle collisions with other objects and self-collisions, as well as how to enhance the visual representation of the cloth using shaders. Overall, this homework was a great introduction to simulation, and we realized how even the most simple motions, like a cloth falling onto a sphere, involves a lot of different components and considerations in order to make it look physically realistic. 
+		<br><br>
+		We started with first implementing a simple grid of masses and springs to create a wireframe representation of cloth. This was surprisingly more involved than we thought at first glance, since there were three different types of constraints and conditions we had to account for, including shearing, structural and bending constraints. In addition, we originally tried to add the springs alongside point masses into the grid, but this messed up our indexing and led to a lot of confusion, so we ended up adding the springs after we had all the point masses in place. 
+		<br><br>
+		We then implemented numerical integration to simulate the cloth's motion and behavior under various physical parameters like spring constant, density, and damping. We looked at external forces like gravity and spring correction forces which keep the cloth together. We computed the total force acting on each point mass based on these external and spring forces with Hooke's Law and applied Verlet integration to update the positions of the point masses over time. We also corrected the point mass positions to prevent unreasonable spring defromation. This part was mostly straightforward: we just had to make sure we were very careful with the order we were updating the positions and velocities of the point masses.
+		<br><br>
+		Next, we handled collisions with other objects like spheres and planes and the cloth itself, and observed how changing the different parameters created different simulations of collisions. We first checked to see if a pointmass would intersect or lay inside the sphere, then calculate the tangent point on the surface, and figure out how to correct the point mass position to bump it to the tangent point. For computing intersections with planes, we had to check if the point mass was below the plane's height (with a dot product instead of the Euclidean norm like in sphere collision) and adjust its position accordingly. We had to make sure we were accounting for the surface offset when computing the tangent point, and followed the same steps of bumping it back up to the surface of the plane. 
+		<br><br>
+		Implementing self collision was probably the most complicated out of the three collision types since there were a lot of moving parts involved. We implemented a few helpers to first compute a hash key based on the point mass 3D position and converting the point mass position into membership in some 3D box volume. We used these hash positions to build a spatial map of the point masses, and then iterated through each point mass to check for collisions with other point masses in the same spatial map cell. We computed the correction vector necessary to set the pairwise distance between colliding point masses to be equal to twice the thickness of the cloth, and averaged out the corrections to apply to each point mass by the number of corrections and the simulation steps. Implementing this logic took quite a bit of time and thought since we had to properly initialize the spatial map in order to check for collisions correctly, and also to ensure that we were only checking for collisions with other point masses that were not the same as the current one. We also had to be careful with how we applied the corrections to avoid infinite loops of self-collisions. 
+		<br><br>
+		Finally, we explored developing vertex and fragment shaders in <code>GLSL</code> to enhance the visual representation of our cloth. We implemented diffuse shading, Blinn-Phong shading, texture mapping, displacement / bump mapping, and mirror reflections. We also struggled with some of the shader logic, especially with getting the normals and light direction right for the mirror model and displacement model, which involved a lot of staring at the code and debugging. We ran into a major bug for our displacement code where the displacement was not working correctly on the sphere and it looked too smooth, and it took us a while to realize that we were not properly transforming the position into world space. Shoutout to the student on Ed for helping us to figure it out! Overall, this part was a great introduction to shaders and how they can be used to create more realistic visual effects in computer graphics.
 
 		<h2>Part 1: Masses and springs</h2>
 		We built out our grid of masses and springs to create our cloth wireframe. 
@@ -188,7 +199,7 @@
 	</div>
 	
 		
-		<li><i>For each of the above, observe any noticeable differences in the cloth compared to the default parameters and show us some screenshots of those interesting differences and describe when they occur.</i></li>
+		<i>For each of the above, observe any noticeable differences in the cloth compared to the default parameters and show us some screenshots of those interesting differences and describe when they occur.</i>
 		<ul>1. Spring Constant(ks)</ul>
 		Compared to the default state, there's a noticeable difference when theres a very high spring constant. For example, below is a comparison between default(ks=5,000) and a high spring constant(ks=50,000).
 		We can see that the cloth looks noticeably more stiff with a high spring constant. 
@@ -197,7 +208,7 @@
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 				<tr>
 					<td>
-						<img src="resting_cloth.png" width=60% alt="damping .10 mid"/>
+						<img src="resting_cloth.png" width=72% alt="damping .10 mid"/>
 						<figcaption>ks = 5,000 (default)</figcaption>
 					</td>
 					<td>
@@ -216,11 +227,11 @@ Compared to the default value of density of 15, when there's a density of 10,000
 	<table style="width: 100%; text-align: center; border-collapse: collapse;">
 		<tr>
 			<td>
-				<img src="resting_cloth.png" width=60% alt="damping .10 mid"/>
+				<img src="resting_cloth.png" width=70% alt="damping .10 mid"/>
 				<figcaption>density = 15 (default)</figcaption>
 			</td>
 			<td>
-				<img src="density=10000_final.png" width=90% alt="damping .10 final"/>
+				<img src="density=10000_final.png" width=95% alt="damping .10 final"/>
 				<figcaption>density = 10,000</figcaption>
 			</td>
 		</tr>
@@ -235,7 +246,7 @@ how fast the cloth reaches the final resting state. The higher damping percentag
 	<table style="width: 100%; text-align: center; border-collapse: collapse;">
 		<tr>
 			<td>
-				<img src="resting_cloth.png" width=60% alt="damping .10 mid"/>
+				<img src="resting_cloth.png" width=65% alt="damping .10 mid"/>
 				<figcaption>damping = 0.20 (default)</figcaption>
 			</td>
 			<td>
@@ -251,7 +262,7 @@ how fast the cloth reaches the final resting state. The higher damping percentag
 		<i>Show us a screenshot of your shaded cloth from scene/pinned4.json in its final resting state! If you choose to use different parameters than the default ones, please list them.</i>
 		<br><br>
 		<div style="text-align: center;">
-			<img src="resting_cloth.png" width="70%" alt="Pinned cloth resting state with default parameters"/>
+			<img src="resting_cloth.png" width="60%" alt="Pinned cloth resting state with default parameters"/>
 			<figcaption>Pinned cloth resting state with default parameters</figcaption>
 		</div>
 
@@ -291,7 +302,7 @@ how fast the cloth reaches the final resting state. The higher damping percentag
 		</div>
 
 		<br>
-		As the ks increases, the cloth seems to be much more stiff and rigid and less likely to drape softly over the sphere. The cloth with <code>ks = 500</code> is much more flexible and drapes over the sphere more naturally and molds over the sphere, while the cloth with <code>ks = 50000</code> is very stiff and doesn't mold to the sphere's shape as much and appears to extrude out more. 
+		As the ks increases, the cloth seems to be much more stiff and rigid and less likely to drape softly over the sphere. The cloth with <code>ks = 500</code> is much more flexible and drapes over the sphere more naturally and molds over the sphere like a very thin flexible cloth, while the cloth with <code>ks = 50000</code> is very stiff and doesn't mold to the sphere's shape as much and appears to extrude out more. The cloth with <code>ks = 5000</code> is somewhere in between, with a moderate amount of drape and stiffness.
 
 		<br><br>
 
