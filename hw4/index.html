@@ -455,7 +455,33 @@ interfere too much with diffuse light and specular light. Next, diffuse light is
 and light direction. This means that diffuse light is strongest when the light source is directly facing the surface. Finally, the specular light component is responsible for determining how "shiny"
 the surface is, such as a metallic surface. And together, all-combined, we get the final Blinn-Phong shading model.
 <br>
-<table style="width: 100%; text-align: center; border-collapse: collapse; margin-top: 20px;">
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: separate; border-spacing: 15px;">
+      <tr>
+        <td style="text-align: center; padding: 10px;">
+          <img src="phong_ambient_only.png" width="400px"/>
+          <figcaption>Only Ambient</figcaption>
+        </td>
+        <td style="text-align: center; padding: 10px;">
+          <img src="phong_diffuse_only.png" width="400px"/>
+          <figcaption>Only Diffuse</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center; padding: 10px;">
+          <img src="phong_specular_only.png" width="400px"/>
+          <figcaption>Only Specular</figcaption>
+        </td>
+        <td style="text-align: center; padding: 10px;">
+          <img src="phong_total.png" width="400px"/>
+          <figcaption>All combined</figcaption>
+        </td>
+      </tr>
+    </table>
+</div>
+
+<!-- <table style="width: 100%; text-align: center; border-collapse: collapse; margin-top: 20px;">
 	<tr>
 		<td>
 			<img src="phong_ambient_only.png" width="400px" alt="Ambient Only"/>
@@ -476,7 +502,7 @@ the surface is, such as a metallic surface. And together, all-combined, we get t
 			<figcaption>All Combined</figcaption>
 		</td>
 	</tr>
-</table>
+</table> -->
 
 		<br><br>
 
@@ -504,30 +530,28 @@ along with the normals. This change allows Displacement mapping to closely refle
 <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
 	<table style="border-collapse: separate; border-spacing: 15px; text-align: center; width: 100%;">
 		<tr>
-			<th></th>
 			<th style="padding: 10px; font-size: 16px; width: 45%;">Displacement</th>
 			<th style="padding: 10px; font-size: 16px; width: 45%;">Bump</th>
 		</tr>
 		<tr>
-			<td style="font-weight: bold; padding: 0px;">-o 16 -a 16</td>
 			<td style="padding: 10px;">
 				<img src="dis_o16.png" width="90%" alt="Displacement A"/><br>
-				<figcaption>Displacement (16)</figcaption>
+				<figcaption>Displacement (-o 16 -a 16)</figcaption>
 			</td>
 			<td style="padding: 10px;">
 				<img src="bump_o16.png" width="90%" alt="Bump A"/><br>
-				<figcaption>Bump (16)</figcaption>
+				<figcaption>Bump (-o 16 -a 16)</figcaption>
 			</td>
 		</tr>
 		<tr>
-			<td style="font-weight: bold; padding: 0px;">-o 128 -a 128</td>
 			<td style="padding: 10px;">
 				<img src="dis_o128.png" width="90%" alt="Displacement B"/><br>
-				<figcaption>Displacement (128)</figcaption>
+				<figcaption>Displacement (-o 128 -a 128)</figcaption>
 			</td>
 			<td style="padding: 10px;">
 				<img src="bump_o128.png" width="90%" alt="Bump B"/><br>
-				<figcaption>Bump (128)</figcaption>
+				<figcaption>Bump (-o 128 -a 128)</figcaption>
+			</td></figcaption>
 			</td>
 		</tr>
 	</table>
@@ -537,19 +561,19 @@ along with the normals. This change allows Displacement mapping to closely refle
 		<br><br>
 		<i>Show a screenshot of your mirror shader on the cloth and on the sphere.</i> 
 <br><br>
-<table style="width: 100%; text-align: center; border-collapse: collapse; margin-top: 20px;">
-	<tr>
-		<th>Sphere Only</th>
-		<th>Cloth on Sphere</th>
-	</tr>
-	<tr>
-		<td>
-			<img src="mirror_before.png" width="400px" alt="Sphere Only"/>
-		</td>
-		<td>
-			<img src="mirror_after.png" width="390px" alt="Cloth on Sphere"/>
-		</td>
-	</tr>
+<table style="width: 100%; text-align: center; border-collapse: separate; border-spacing: 15px;">
+    <tr>
+        <th style="padding: 1px;">Sphere Only</th>
+        <th style="padding: 1px;">Cloth on Sphere</th>
+    </tr>
+    <tr>
+        <td style="padding: 10px;">
+            <img src="mirror_before.png" width="300px" alt="Sphere Only"/>
+        </td>
+        <td style="padding: 10px;">
+            <img src="mirror_after.png" width="290px" alt="Cloth on Sphere"/>
+        </td>
+    </tr>
 </table>
 		<!-- <br><br>
 		<i>Explain what you did in your custom shader, if you made one.</i> 
