@@ -197,11 +197,11 @@
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 				<tr>
 					<td>
-						<img src="resting_cloth.png" width="200px" alt="damping .10 mid"/>
+						<img src="resting_cloth.png" width=60% alt="damping .10 mid"/>
 						<figcaption>ks = 5,000 (default)</figcaption>
 					</td>
 					<td>
-						<img src="ks_50000.png" width="200px" alt="damping .10 final"/>
+						<img src="ks_50000.png" width=75% alt="damping .10 final"/>
 						<figcaption>ks = 50,000</figcaption>
 					</td>
 				</tr>
@@ -216,11 +216,11 @@ Compared to the default value of density of 15, when there's a density of 10,000
 	<table style="width: 100%; text-align: center; border-collapse: collapse;">
 		<tr>
 			<td>
-				<img src="resting_cloth.png" width="200px" alt="damping .10 mid"/>
+				<img src="resting_cloth.png" width=60% alt="damping .10 mid"/>
 				<figcaption>density = 15 (default)</figcaption>
 			</td>
 			<td>
-				<img src="density=10000_final.png" width="200px" alt="damping .10 final"/>
+				<img src="density=10000_final.png" width=90% alt="damping .10 final"/>
 				<figcaption>density = 10,000</figcaption>
 			</td>
 		</tr>
@@ -235,11 +235,11 @@ how fast the cloth reaches the final resting state. The higher damping percentag
 	<table style="width: 100%; text-align: center; border-collapse: collapse;">
 		<tr>
 			<td>
-				<img src="resting_cloth.png" width="200px" alt="damping .10 mid"/>
+				<img src="resting_cloth.png" width=60% alt="damping .10 mid"/>
 				<figcaption>damping = 0.20 (default)</figcaption>
 			</td>
 			<td>
-				<img src="damping=0.90_final.png" width="200px" alt="damping .10 final"/>
+				<img src="damping=0.90_final.png" width=90% alt="damping .10 final"/>
 				<figcaption>damping = 0.90</figcaption>
 			</td>
 		</tr>
@@ -268,6 +268,7 @@ how fast the cloth reaches the final resting state. The higher damping percentag
 		
 		In addition, we also modify the <code>Cloth::Collide</code> code to iterate through all the <code>PointMass</code> object, and in each iteration, we iterate through every <code>CollisionObject</code> and check for collisions with the <code>PointMass</code> object.
 
+		<br><br>
 		<i>Show us screenshots of your shaded cloth from scene/sphere.json in its final resting state on the sphere using the default ks = 5000 as well as with ks = 500 and ks = 50000. Describe the differences in the results.</i>
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
@@ -315,15 +316,16 @@ how fast the cloth reaches the final resting state. The higher damping percentag
 		<h2>Part 4: Handling self-collisions</h2>
 		<i>Describe your implementation of handling self-collisions.</i>
 		<br><br>
-		To handle self-collision, we first write a helper function <code>Cloth::hash_position</code> which hashes a given 3D position into a unique float based on membership in a grid. ADD MORE HERE
+		To handle self-collision, we first write a helper function <code>Cloth::hash_position</code> which hashes a given 3D position into a unique float based on membership in a 3D boxes with dimensions <code>w = 3 * width / num_width_points</code>, <code>h = 3 * height / num_height_points</code>, and <code>t = std::max(w, h)</code>. We then "snap" the pointmass to the nearest box by taking the <code>fmod</code> of the position's x, y, and z coordinates with respect to the box dimensions and subtracting the <code>fmod</code> value from the position coordinate to get the box coordinates. We then combine these box coordinates into a unique float hash value by setting the <code>hash = snapped_x + width * (snapped_y + height * snapped_z)</code>
 
 		<br><br>
 
-		Next, we wrote a function to actually build a spatial map out of all the point masses by iterating through each point mass, computing the hash based on the point mass position, checking if the hash is already in the spatial map, and if not, adding it to the spatial map.
+		Next, we wrote a function to actually build the spatial map out of all the point masses by iterating through each point mass, computing the hash based on the point mass position, checking if the hash is already in the spatial map, and if not, adding it to the spatial map. 
 		<br><br>
 
-		Then, we wrote the <code>Cloth::self_collide</code> function to iterate through all the point masses and check for collisions with other point masses in the same spatial map cell. We first calculate the hash of that position and check if there are any other point masses in the same cell. ADD MORE HERE
-
+		Then, we wrote the <code>Cloth::self_collide</code> function to iterate through all the point masses, check for collisions with other point masses in the same spatial map cell, and determine the average correction amount. We first calculate the hash of that position and check if there are any other point masses in the same cell. We initialize a <code>total_correction</code> vector and a corrections counter, and iterate through each candidate point mass and check if the candidate is not the same as the current point mass. If they are not the same, we calculate the distance <code>dist</code> between the given point mass and the candidate by subtracting their positions and taking the norm. If the distance apart is less than <code>2*thickness</code>, we want to find the correction vector necessary to set the pairwise distance to be <b>equal</b> to <code>2*thickness</code> apart. We do this by taking the unit direction between the two point masses, and scaling this direction by <code>2*thickness - dist</code>, which becomes our <code>curr_correction</code> vector. We then add this correction vector to our <code>total_correction</code> vector and increment our corrections counter. After iterating through all the candidates, we  check if there are any corrections, and if there are, we divide the <code>total_correction</code> vector by the corrections counter and simulation steps and apply this average correction to the current point mass's position by incrementing the position by the average correction vector.
+		
+		
 		<br><br>
 		Lastly, we modified the <code>PointMass::Collide</code> function to check for self-collisions by building the spatial map, and then iterating through the all of the point masses and calling <code>self_collide</code> to check for self collision. 
 
@@ -365,7 +367,7 @@ increase the ks value to 9,000(upper-left), we can see the cloth is "resisting" 
 On the other side of the spectrum we can see that a high density and high ks(upper-right), will result in a cloth that is heavy(i.e. falling fast) and more rigid.
 
 <div style="display: flex; flex-direction: column; align-items: center;">
-	<table style="border-collapse: collapse; text-align: center;">
+	<table style="border-collapse: separate; text-align: center; border-spacing: 10px">
 		<tr>
 			<td rowspan="4" style="writing-mode: vertical-rl; transform: rotate(180deg); padding: 10px; font-weight: bold;">Increasing ks →</td>
 			<td></td>
@@ -376,52 +378,47 @@ On the other side of the spectrum we can see that a high density and high ks(upp
 		<tr>
 			<td style="font-weight: bold;">ks = 9,000</td>
 			<td>
-				<img src="d1_ks9000.png" width="200px"/>
+				<img src="d1_ks9000.png" width="200px" alt="density 1 ks 9000"/>
 				<figcaption>density=1, ks=9,000</figcaption>
 			</td>
 			<td>
-				<img src="d15_ks9000.png" width="200px"/>
+				<img src="d15_ks9000.png" width="200px" alt="density 15 ks 9000"/>
 				<figcaption>density=15, ks=9,000</figcaption>
 			</td>
 			<td>
-				<img src="d50_ks9000.png" width="200px"/>
+				<img src="d50_ks9000.png" width="200px" alt="density 50 ks 9000"/>
 				<figcaption>density=50, ks=9,000</figcaption>
 			</td>
 		</tr>
 		<tr>
 			<td style="font-weight: bold;">ks = 5,000</td>
 			<td>
-				<img src="d1_ks5000.png" width="200px" alt="density 0.1 ks 500"/>
+				<img src="d1_ks5000.png" width="200px" alt="density 1 ks 5000"/>
 				<figcaption>density=1, ks=5,000</figcaption>
 			</td>
 			<td>
-				<img src="d15_ks5000.png" width="200px" alt="density 0.5 ks 500"/>
+				<img src="d15_ks5000.png" width="200px" alt="density 15 ks 5000"/>
 				<figcaption>density=15, ks=5,000</figcaption>
 			</td>
 			<td>
-				<img src="d50_ks5000.png" width="200px" alt="density 1.0 ks 500"/>
+				<img src="d50_ks5000.png" width="200px" alt="density 50 ks 5000"/>
 				<figcaption>density=50, ks=5,000</figcaption>
 			</td>
 		</tr>
 		<tr>
 			<td style="font-weight: bold;">ks = 1,000</td>
 			<td>
-				<img src="d1_ks1000.png" width="200px" alt="density 0.1 ks 1000"/>
+				<img src="d1_ks1000.png" width="200px" alt="density 1 ks 1000"/>
 				<figcaption>density=1, ks=1,000</figcaption>
 			</td>
 			<td>
-				<img src="d15_ks1000.png" width="200px" alt="density 0.5 ks 1000"/>
+				<img src="d15_ks1000.png" width="200px" alt="density 15 ks 1000"/>
 				<figcaption>density=15, ks=1,000</figcaption>
 			</td>
 			<td>
-				<img src="d50_ks1000.png" width="200px" alt="density 1.0 ks 1000"/>
+				<img src="d50_ks1000.png" width="200px" alt="density 50 ks 1000"/>
 				<figcaption>density=50, ks=1,000</figcaption>
 			</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td></td>
-			<td colspan="3" style="padding: 10px; font-weight: bold;">Increasing density -></td>
 		</tr>
 	</table>
 </div>
