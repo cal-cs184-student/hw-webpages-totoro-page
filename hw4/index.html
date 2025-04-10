@@ -627,8 +627,42 @@ along with the normals. This change allows Displacement mapping to closely refle
 			
 			<br><br>
 			<b>3. Art competition: Simulating a flying kite! </b>
-			TODO
+			<br><br>
+			For the art competition, we wanted to combine all of our extra credit components by putting our wind simulation together with a cool scene rendered with the cloth and our new cube primitive. We decided to create a scene of a kite flying in the wind attached to a pole. 
+			
+			<br><br> First we had to actually create the new <code>scene/kite.json</code> to render both the long skinny cube as the pole and the kite pinned at one corner attached to the pole. In order to get the kite effect, we pinned the cloth at one corner, but it looked way too soft and just like a handkerchief waving in the wind. To fix this, we added extra structural springs to create a cross bar on the cloth to give it more of a kite-lick structure, but we sturggled a lot with this since we were originally trying to add cross bars in the midpoint of the cloth, but we actually needed the cross bar to run between the top left - bottom right corner, and the top right - bottom left corner. We also added an extra field to our <code>Spring</code> struct to signal whether a spring was a kite frame or not, and we increased the <code>k_s</code> factor of the kite frame springs by <code>10</code> in order to make it extra stiff. 
+			
+			<br><br>At this point, the structure of our cloth looked much more kite-like, but we still wanted to make it more realistic. To fix this, we started off by altering our wind. Our previous wind implementation oscillated in circles, which didn't create a very realistic kite flying effect, so we changed our wind to have a steady constant wind that always blows up and to the right and added small oscillating components to modulate the base wind. This gave our final kite a strong and stable upward lift with a bit of natural flutter. Lastly, we wanted to make the cloth itself actually look like a kite. We first tried an iamge of the internet with 4 different colored squares, but the orientation was off. We took matters into our own hands and designed a custom texture in Canva to have 4 different colored triangles with shading to give it more depth, and added the texture to our cloth. With all the components together, our cloth turned into a majestic flying kite! 
 
+			Here's a table demonstrating our flying kite progression:
+
+			<table style="width: 100%; text-align: center; border-collapse: separate; border-spacing: 15px;">
+				<tr>
+					<th style="padding: 10px;">Kite 1</th>
+					<th style="padding: 10px;">Kite 2</th>
+					<th style="padding: 10px;">Kite 3</th>
+				</tr>
+				<tr>
+					<td style="padding: 10px;">
+						<img src="kite1.gif" width="200px" alt="Kite 1"/>
+						<figcaption>Initial Kite progress</figcaption>
+					</td>
+					<td style="padding: 10px;">
+						<img src="kite2.gif" width="200px" alt="Kite 2"/>
+						<figcaption>Intermediate Kite progress</figcaption>
+					</td>
+					<td style="padding: 10px;">
+						<img src="kite3.gif" width="200px" alt="Kite 3"/>
+						<figcaption>Kite with initial texture</figcaption>
+					</td>
+				</tr>
+			</table>
+
+
+			<figure>
+				<img src="kite.gif" alt="kite flying" style="width: 50%"/>
+				<figcaption>GIF of our final flying kite in the wind</figcaption>
+			</figure>
 
 		</ul>
 		
