@@ -578,7 +578,7 @@ along with the normals. This change allows Displacement mapping to closely refle
 		<!-- <br><br>
 		<i>Explain what you did in your custom shader, if you made one.</i> -->
 
-		<h2>(Optional) Part 6: Extra Credit - Additional cloth simulation features!</h2>
+		<h2>Part 6: Extra Credit - Additional cloth simulation features!</h2>
 		<ul>
 			<b>1. Dynamic Wind feature</b>
 			<br><br>
@@ -587,9 +587,47 @@ along with the normals. This change allows Displacement mapping to closely refle
 			Specifically, we created a <code>spatial_coeff = pm.position.x*0.3 + pm.position.y*0.2+pm.position.z*0.4.</code> along with <code>total_simulation_steps</code>, which is a new
 			static variable that accumulates <code>delta_t</code>. We then create a new force <code>wind=Vector3D(0.8*total_simulation_steps+spatial_coeff, 0.2*sin(total_simulation_steps+spatial_coeff), 0.2*cos(total_simulation_steps+spatial_coeff)</code>.
 			Essentially, we varied the amount of force added according to the position and current time and put cos or sin to give a rhythmical feel.
-<br><br>
-<img src="dynamic_wind_fast.gif" alt="A looping cloth simulation" width="500px" />
-<br>
+			<br><br>
+			<img src="dynamic_wind_fast.gif" alt="A looping cloth simulation" width="500px" />
+			<br>
+
+			<br><br>
+			<b>2. Cube collision</b>
+			<br><br>
+			We implemented collision with a cube 3D primitive. It took a while to parse through the codebase and see where we had to add new files and modify the existing codebase to take in a new primitive. In <code>src/collision</code>, we created <code>cube.h</code> and <code>cube.cpp</code> to define the attributes of our cube, including the min_corner, max_corner, rendering and colliding functions. We had to implement a custom collision function, similar to what we did for the sphere and the plane. For the cube, we checked if the pointmass position was inside the cube by checking the min and max corner bounds. If the pointmass was inside, we calculate how far the pointmass is from each face of the cube in each direction and determine the closest face to the pointmass. We then compute the correction vector to push the pointmass out of the cube by moving it to the closest face's position, making sure to account for friction and the surface offset. 
+			
+			<br><br> Next, we had to figure out how to actually render the cube by adding new files in <code>src/misc</code> by adding <code>cube_drawing.h</code> and <code>cube_drawing.cpp</code>. We used copilot to help us generate the code to render the cube. We also had to modify the main driver <code>src/main.cpp</code> in order to take in our new cube primitive, and we had to make sure we set the proper key's for the cube and make sure to add a check to see if we're rendering a cube or not in our scene. Lastly, we had to create a new <code>.json</code> scene file with both a cloth and a cube. 
+
+			<br><br> When we initially looked at the results, the collision with the top face looked too sharp and unnatural. We then modified the cube by adding very tiny invisible spheres at the top corners in order to round the corners and make the collision look more natural. This meant we had to add a visibility flag to our sphere and just add a simple check to our sphere render function to see whether the sphere is visible or not. 
+
+			<table style="width: 100%; text-align: center; border-collapse: separate; border-spacing: 15px;">
+				<tr>
+					<th style="padding: 10px;">Sharp Cube</th>
+					<th style="padding: 10px;">Mirror Cube</th>
+				</tr>
+				<tr>
+					<td style="padding: 10px;">
+						<img src="sharp_cube.png" width="300px" alt="Sharp Cube"/>
+						<figcaption>Without rounded corners</figcaption>
+					</td>
+					<td style="padding: 10px;">
+						<img src="mirror_cube.png" width="300px" alt="Mirror Cube"/>
+						<figcaption>With rounded corners modification</figcaption>
+					</td>
+				</tr>
+					</td>
+				</tr>
+			</table>
+
+			<figure>
+				<img src="cube.gif" alt="cloth draped over cube" style="width: 50%"/>
+				<figcaption>GIF of the collision with the cube</figcaption>
+			</figure>
+			
+			<br><br>
+			<b>3. Art competition: Simulating a flying kite! </b>
+			TODO
+
 
 		</ul>
 		
