@@ -576,10 +576,22 @@ along with the normals. This change allows Displacement mapping to closely refle
     </tr>
 </table>
 		<!-- <br><br>
-		<i>Explain what you did in your custom shader, if you made one.</i> 
+		<i>Explain what you did in your custom shader, if you made one.</i> -->
 
 		<h2>(Optional) Part 6: Extra Credit - Additional cloth simulation features!</h2>
-		TODO -->
+		<ul>
+			<b>1. Dynamic Wind feature</b>
+			<br><br>
+			We included a wind feature by adding a new force to all our point masses in Part 2. To give it a dynamic effect,
+			we made this a spatially varying force by changing the amount of force added to a point mass depending on the total simulation steps and it's current x,y,z position.
+			Specifically, we created a <code>spatial_coeff = pm.position.x*0.3 + pm.position.y*0.2+pm.position.z*0.4.</code> along with <code>total_simulation_steps</code>, which is a new
+			static variable that accumulates <code>delta_t</code>. We then create a new force <code>wind=Vector3D(0.8*total_simulation_steps+spatial_coeff, 0.2*sin(total_simulation_steps+spatial_coeff), 0.2*cos(total_simulation_steps+spatial_coeff)</code>.
+			Essentially, we varied the amount of force added according to the position and current time and put cos or sin to give a rhythmical feel.
+<br><br>
+<img src="dynamic_wind_fast.gif" alt="A looping cloth simulation" width="500px" />
+<br>
+
+		</ul>
 		
 		</div>
 	</body>
